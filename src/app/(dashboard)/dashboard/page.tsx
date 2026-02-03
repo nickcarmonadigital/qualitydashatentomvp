@@ -16,7 +16,7 @@ export default function DashboardPage() {
   }, []);
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-8 animate-fade-in">
       <div>
         <h2 className="text-3xl font-bold tracking-tight text-slate-900">Dashboard</h2>
         <p className="text-muted-foreground">High-level overview of Quality Operations Performance.</p>

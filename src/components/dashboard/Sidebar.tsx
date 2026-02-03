@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import { cn } from '@/lib/utils';
 import {
@@ -11,7 +12,8 @@ import {
     Settings,
     LogOut,
     ShieldAlert,
-    PenTool
+    PenTool,
+    ClipboardList
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { signOut } from 'next-auth/react';
@@ -22,7 +24,7 @@ const navItems = [
     { name: 'Agent Performance', href: '/agents', icon: Users },
     { name: 'Six Sigma Tools', href: '/lss-tools', icon: Target },
     { name: '50/75 Analysis', href: '/fifty-seventy-five', icon: Target },
-    { name: 'Action Plans', href: '/action-plans', icon: Target },
+    { name: 'Action Plans', href: '/action-plans', icon: ClipboardList },
 ];
 
 const adminItems = [
@@ -37,10 +39,20 @@ export function Sidebar() {
     const isAdmin = true; // Mocked for MVP to show UI
 
     return (
-        <div className="flex bg-slate-900 text-white h-screen w-64 flex-col fixed left-0 top-0 border-r border-slate-800">
-            <div className="p-6 flex items-center space-x-2 border-b border-slate-800">
-                <ShieldAlert className="h-6 w-6 text-blue-500" />
-                <span className="text-xl font-bold">Atento LSS</span>
+        <div className="flex sidebar-gradient text-white h-screen w-64 flex-col fixed left-0 top-0 border-r border-slate-800">
+            <div className="p-6 flex items-center space-x-3 border-b border-slate-800/50">
+                <div className="relative w-10 h-10 rounded-lg overflow-hidden glow-accent">
+                    <Image
+                        src="/atento-logo.png"
+                        alt="Atento Logo"
+                        fill
+                        className="object-contain"
+                    />
+                </div>
+                <div className="flex flex-col">
+                    <span className="text-lg font-bold text-white">Atento LSS</span>
+                    <span className="text-xs text-[#88D2F8]">Quality Operations</span>
+                </div>
             </div>
 
             <nav className="flex-1 px-4 py-6 space-y-2">

@@ -69,7 +69,7 @@ export default function DashboardPage() {
     // Quick stats
     const totalAgents = agents.length;
     const totalKPIs = kpis.length;
-    const activePlans = plans.filter(p => p.status === 'In Progress').length;
+    const activePlans = plans.filter(p => p.status === 'in_progress').length;
     const criticalAgents = candidates.filter(c => c.riskLevel === 'Critical').length;
 
     setQuickStats({
@@ -77,7 +77,7 @@ export default function DashboardPage() {
       totalKPIs,
       activePlans,
       criticalAgents,
-      completedPlans: plans.filter(p => p.status === 'Completed').length,
+      completedPlans: plans.filter(p => p.status === 'closed').length,
       passRate: data[0]?.currentValue || 0
     });
   }, []);
@@ -233,16 +233,16 @@ export default function DashboardPage() {
                     <div className="flex-1 h-3 bg-slate-100 rounded-full overflow-hidden">
                       <div
                         className={`h-full rounded-full transition-all duration-500 ${stats.avgScore >= 90 ? 'bg-green-500' :
-                            stats.avgScore >= 80 ? 'bg-blue-500' :
-                              stats.avgScore >= 70 ? 'bg-amber-500' : 'bg-red-500'
+                          stats.avgScore >= 80 ? 'bg-blue-500' :
+                            stats.avgScore >= 70 ? 'bg-amber-500' : 'bg-red-500'
                           }`}
                         style={{ width: `${stats.avgScore}%` }}
                       />
                     </div>
                     <div className="w-16 text-right">
                       <span className={`font-bold ${stats.avgScore >= 90 ? 'text-green-600' :
-                          stats.avgScore >= 80 ? 'text-blue-600' :
-                            stats.avgScore >= 70 ? 'text-amber-600' : 'text-red-600'
+                        stats.avgScore >= 80 ? 'text-blue-600' :
+                          stats.avgScore >= 70 ? 'text-amber-600' : 'text-red-600'
                         }`}>
                         {stats.avgScore}%
                       </span>
@@ -329,14 +329,14 @@ export default function DashboardPage() {
                               {plan.title}
                             </p>
                             <p className="text-xs text-muted-foreground truncate">
-                              {plan.category}
+                              {plan.causal_category}
                             </p>
                           </div>
                           <Badge variant={
-                            plan.status === 'Completed' ? 'default' :
-                              plan.status === 'In Progress' ? 'secondary' : 'outline'
+                            plan.status === 'closed' ? 'default' :
+                              plan.status === 'in_progress' ? 'secondary' : 'outline'
                           } className="shrink-0 text-xs">
-                            {plan.status}
+                            {plan.status === 'in_progress' ? 'In Progress' : plan.status === 'closed' ? 'Completed' : 'Open'}
                           </Badge>
                         </div>
                       </div>

@@ -12,6 +12,15 @@ export interface AuditAssignment {
     ticketsToAudit: TicketToAudit[];
 }
 
+// CSV Data interface for uploaded files
+export interface CSVTicketData {
+    agentName: string;
+    agentTeam: string;
+    ticketId: string;
+    timestamp: string;
+    category: string;
+}
+
 // Helper to generate random ticket ID
 function generateTicketId(): string {
     const year = 2024;
@@ -107,3 +116,55 @@ export const pickAuditTargets = (agents: Agent[], count: number = 3): AuditAssig
     });
 };
 
+// Pick random tickets from CSV data
+export const pickFromCSVData = (csvData: CSVTicketData[], agentCount: number = 3): AuditAssignment[] => {
+    // Group tickets by agent
+    const ticketsByAgent: Map<string, { team: string; tickets: TicketToAudit[] }> = new Map();
+
+    for (const row of csvData) {
+        if (!ticketsByAgent.has(row.agentName)) {
+            ticketsByAgent.set(row.agentName, {
+                team: row.agentTeam,
+                tickets: []
+            });
+        }
+        ticketsByAgent.get(row.agentName)!.tickets.push({
+            ticketId: row.ticketId,
+            timestamp: row.timestamp || 'N/A',
+            category: row.category || 'General'
+        });
+    }
+
+    // Convert to array and shuffle
+    const agentNames = Array.from(ticketsByAgent.keys());
+    const shuffledAgents = agentNames.sort(() => 0.5 - Math.random());
+
+    // Select random agents
+    const selectedAgents = shuffledAgents.slice(0, Math.min(agentCount, shuffledAgents.length));
+
+    return selectedAgents.map((agentName, idx) => {
+        const agentData = ticketsByAgent.get(agentName)!;
+
+        // Randomly select 2-3 tickets from this agent's tickets
+        const shuffledTickets = [...agentData.tickets].sort(() => 0.5 - Math.random());
+        const ticketCount = Math.min(Math.floor(Math.random() * 2) + 2, shuffledTickets.length);
+        const selectedTickets = shuffledTickets.slice(0, ticketCount);
+
+        // Create a pseudo-Agent object for display
+        const pseudoAgent: Agent = {
+            id: `csv-agent-${idx}`,
+            name: agentName,
+            role: 'Support Agent',
+            team: agentData.team,
+            tenure_days: 0,
+            status: 'active',
+            metrics: {}
+        };
+
+        return {
+            agent: pseudoAgent,
+            reason: 'Random Sample' as const, // All CSV imports are random samples
+            ticketsToAudit: selectedTickets
+        };
+    });
+};

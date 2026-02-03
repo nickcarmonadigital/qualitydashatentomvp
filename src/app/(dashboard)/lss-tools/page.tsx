@@ -8,8 +8,10 @@ import { ParetoChart } from '@/components/charts/ParetoChart';
 import { ScatterPlot } from '@/components/charts/ScatterPlot';
 import { Histogram } from '@/components/charts/Histogram';
 import { BoxPlot } from '@/components/charts/BoxPlot';
-import { Network, GitBranch, PenTool, BarChart3, ScatterChart as ScatterIcon, Sigma } from 'lucide-react';
+import { Network, GitBranch, PenTool, BarChart3, ScatterChart as ScatterIcon, Sigma, Shuffle, ArrowRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
+import Link from 'next/link';
 
 export default function LSSToolsPage() {
     return (
@@ -18,6 +20,31 @@ export default function LSSToolsPage() {
                 <h2 className="text-3xl font-bold tracking-tight">Lean Six Sigma Tools</h2>
                 <p className="text-muted-foreground">Advanced root cause analysis and metric definition workbenches.</p>
             </div>
+
+            {/* Audit Randomizer Link Card */}
+            <Link href="/lss-tools/audit-randomizer" className="block">
+                <Card className="border-2 border-blue-500 hover:bg-blue-50 transition-colors cursor-pointer">
+                    <CardHeader>
+                        <div className="flex items-center justify-between">
+                            <div className="flex items-center gap-3">
+                                <div className="p-2 bg-blue-100 rounded-lg">
+                                    <Shuffle className="h-6 w-6 text-blue-600" />
+                                </div>
+                                <div>
+                                    <CardTitle className="flex items-center gap-2">
+                                        Audit Randomizer
+                                        <Badge variant="secondary" className="text-xs">DEMO</Badge>
+                                    </CardTitle>
+                                    <CardDescription>
+                                        Random ticket/call selector for quality audits (Enterprise feature)
+                                    </CardDescription>
+                                </div>
+                            </div>
+                            <ArrowRight className="h-5 w-5 text-muted-foreground" />
+                        </div>
+                    </CardHeader>
+                </Card>
+            </Link>
 
             <Tabs defaultValue="ctx" className="space-y-4">
                 <TabsList>

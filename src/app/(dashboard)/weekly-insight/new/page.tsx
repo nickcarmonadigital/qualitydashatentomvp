@@ -44,7 +44,7 @@ export default function NewInsightPage() {
               {status === 'approved' ? 'APPROVED' : status === 'submitted' ? 'SUBMITTED' : 'DRAFT'}
             </Badge>
           </div>
-          <p className="text-muted-foreground">Week 6 (Feb 02 - Feb 08) - TikTok Trust & Safety</p>
+          <p className="text-muted-foreground">Week 6 (Feb 02 - Feb 08) - Atento Quality Operations</p>
         </div>
         <div className="flex space-x-2">
           {status === 'draft' && (

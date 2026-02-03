@@ -1,0 +1,45 @@
+50/75 Rule Document,,,,,,,,,,,,,,,,,,,Evaluating 50/75 Rule,,,,,,,,,,,,,
+,,,,,,Current Month,,,,,,,,,,,,,,,,,,,,,,,,,,
+LOB,KPI NAME,KPI DEFINITION,"KPI Criterion
+ > or <",TARGET,Penalty Associated,1,2,3,4,5,6,7,8,9,10,11,12,,Target Compliance,Consistent Improvement,,,,,,,,,,,,
+,,,,,,1-Dec,1-Jan,25-Mar,25-Apr,25-May,25-Jun,25-Jul,25-Aug,25-Sep,25-Oct,25-Nov,25-Dec,,,,,N°,Period Start,0,1,2,3,4,5,First 6 Months Average,Less Than,Consistent Improvement
+Platforms,Pass Rate, ,>=,95%,No,,,,,,,,,,,,,,#DIV/0!,#DIV/0!,,1,,,,,,,,,FALSE,0
+,Product Pass Rate, ,>=,96%,No,,,,,,,,,,,,,,#DIV/0!,#DIV/0!,,2,,,,,,,,,FALSE,0
+,CSAT %, ,>=,80%,Yes,,,,,,,,,,,,,,#DIV/0!,#DIV/0!,,3,,,,,,,,,FALSE,0
+,CSAT Fill Rate 18%, ,>=,18%,No,,,,,,,,,,,,,,#DIV/0!,#DIV/0!,,4,,,,,,,,,FALSE,0
+,CSAT Resolution Rate, ,>=,75%,No,,,,,,,,,,,,,,#DIV/0!,#DIV/0!,,5,,,,,,,,,FALSE,0
+,FRT Attainment,2hours,>=,80%,Yes,,,,,,,,,,,,,,#DIV/0!,#DIV/0!,,6,,,,,,,,,FALSE,0
+,TRT,48 Hours,>=,75%,Yes,,,,,,,,,,,,,,#DIV/0!,#DIV/0!,,7,,,,,,,,,FALSE,0
+,Productivity,Tickets x hour delivered,>=,1.2,Yes,,,,,,,,,,,,,,#DIV/0!,#DIV/0!,,8,,,,,,,,,FALSE,0
+Performance,Pass Rate, ,>=,95%,No,,,,,,,,,,,,,,#DIV/0!,#DIV/0!,,9,,,,,,,,,FALSE,0
+,Product Pass Rate, ,>=,96%,No,,,,,,,,,,,,,,#DIV/0!,#DIV/0!,,10,,,,,,,,,FALSE,0
+,CSAT %, ,>=,80%,Yes,,,,,,,,,,,,,,#DIV/0!,#DIV/0!,,11,,,,,,,,,FALSE,0
+,CSAT Fill Rate 18%, ,>=,18%,No,,,,,,,,,,,,,,#DIV/0!,#DIV/0!,,12,,,,,,,,,FALSE,0
+,CSAT Resolution Rate, ,>=,75%,No,,,,,,,,,,,,,,#DIV/0!,#DIV/0!,,13,,,,,,,,,FALSE,0
+,FRT Attainment,2hours,>=,80%,Yes,,,,,,,,,,,,,,#DIV/0!,#DIV/0!,,14,,,,,,,,,FALSE,0
+,TRT,48 Hours,>=,75%,Yes,,,,,,,,,,,,,,#DIV/0!,#DIV/0!,,15,,,,,,,,,FALSE,0
+,Productivity,Tickets x hour delivered,>=,1.2,Yes,,,,,,,,,,,,,,#DIV/0!,#DIV/0!,,16,,,,,,,,,FALSE,0
+Branding,Pass Rate, ,>=,95%,No,,,,,,,,,,,,,,#DIV/0!,#DIV/0!,,17,,,,,,,,,FALSE,0
+,Product Pass Rate, ,>=,96%,No,,,,,,,,,,,,,,#DIV/0!,#DIV/0!,,18,,,,,,,,,FALSE,0
+,CSAT %, ,>=,80%,Yes,,,,,,,,,,,,,,#DIV/0!,#DIV/0!,,19,,,,,,,,,FALSE,0
+,CSAT Fill Rate 18%, ,>=,18%,No,,,,,,,,,,,,,,#DIV/0!,#DIV/0!,,20,,,,,,,,,FALSE,0
+,CSAT Resolution Rate, ,>=,75%,No,,,,,,,,,,,,,,#DIV/0!,#DIV/0!,,21,,,,,,,,,FALSE,0
+,FRT Attainment,2hours,>=,80%,Yes,,,,,,,,,,,,,,#DIV/0!,#DIV/0!,,22,,,,,,,,,FALSE,0
+,TRT,48 Hours,>=,75%,Yes,,,,,,,,,,,,,,#DIV/0!,#DIV/0!,,23,,,,,,,,,FALSE,0
+,Productivity,Tickets x hour delivered,>=,1.2,Yes,,,,,,,,,,,,,,#DIV/0!,#DIV/0!,,24,,,,,,,,,FALSE,0
+Measurement,Pass Rate, ,>=,95%,No,,,,,,,,,,,,,,#DIV/0!,#DIV/0!,,25,,,,,,,,,FALSE,0
+,Product Pass Rate, ,>=,96%,No,,,,,,,,,,,,,,#DIV/0!,#DIV/0!,,26,,,,,,,,,FALSE,0
+,CSAT %, ,>=,80%,Yes,,,,,,,,,,,,,,#DIV/0!,#DIV/0!,,27,,,,,,,,,FALSE,0
+,CSAT Fill Rate 18%, ,>=,18%,No,,,,,,,,,,,,,,#DIV/0!,#DIV/0!,,28,,,,,,,,,FALSE,0
+,CSAT Resolution Rate, ,>=,75%,No,,,,,,,,,,,,,,#DIV/0!,#DIV/0!,,29,,,,,,,,,FALSE,0
+,FRT Attainment,2hours,>=,80%,Yes,,,,,,,,,,,,,,#DIV/0!,#DIV/0!,,30,,,,,,,,,FALSE,0
+,TRT,48 Hours,>=,75%,Yes,,,,,,,,,,,,,,#DIV/0!,#DIV/0!,,31,,,,,,,,,FALSE,0
+,Productivity,Tickets x hour delivered,>=,1.2,Yes,,,,,,,,,,,,,,#DIV/0!,#DIV/0!,,32,,,,,,,,,FALSE,0
+Commerce,Pass Rate, ,>=,95%,No,,,,,,,,,,,,,,#DIV/0!,#DIV/0!,,33,,,,,,,,,FALSE,0
+,Product Pass Rate, ,>=,96%,No,,,,,,,,,,,,,,#DIV/0!,#DIV/0!,,34,,,,,,,,,FALSE,0
+,CSAT %, ,>=,80%,Yes,,,,,,,,,,,,,,#DIV/0!,#DIV/0!,,35,,,,,,,,,FALSE,0
+,CSAT Fill Rate 18%, ,>=,18%,No,,,,,,,,,,,,,,#DIV/0!,#DIV/0!,,36,,,,,,,,,FALSE,0
+,CSAT Resolution Rate, ,>=,75%,No,,,,,,,,,,,,,,#DIV/0!,#DIV/0!,,37,,,,,,,,,FALSE,0
+,FRT Attainment,2hours,>=,80%,Yes,,,,,,,,,,,,,,#DIV/0!,#DIV/0!,,38,,,,,,,,,FALSE,0
+,TRT,48 Hours,>=,75%,Yes,,,,,,,,,,,,,,#DIV/0!,#DIV/0!,,39,,,,,,,,,FALSE,0
+,Productivity,Tickets x hour delivered,>=,1.2,Yes,,,,,,,,,,,,,,#DIV/0!,#DIV/0!,,40,,,,,,,,,FALSE,0

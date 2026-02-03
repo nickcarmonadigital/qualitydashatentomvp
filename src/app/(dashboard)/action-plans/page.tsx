@@ -83,9 +83,11 @@ export default function ActionPlansPage() {
                     <h2 className="text-3xl font-bold tracking-tight">Action Plans</h2>
                     <p className="text-muted-foreground">Manage strategic initiatives and corrective actions.</p>
                 </div>
-                <Button>
-                    <FileText className="mr-2 h-4 w-4" />
-                    New Action Plan
+                <Button asChild>
+                    <Link href="/action-plans/new">
+                        <FileText className="mr-2 h-4 w-4" />
+                        New Action Plan
+                    </Link>
                 </Button>
             </div>
 

@@ -74,8 +74,17 @@ export default function FiftySeventyFivePage() {
         });
 
         // Sort by result (Incapable first)
-        setAnalysis(results.sort((a, b) => a.median - b.median)); // Simple sort
+        setAnalysis(results.sort((a, b) => a.median - b.median));
     }, [selectedKpiId, agents, scores, kpis]);
+
+    const [showFocusOnly, setShowFocusOnly] = useState(true);
+
+    const filteredAnalysis = (showFocusOnly
+        ? analysis.filter(a => a.result !== 'CAPABLE')
+        : analysis).sort((a, b) => {
+            const p: Record<string, number> = { 'INCAPABLE': 0, 'INCONSISTENT': 1, 'CAPABLE': 2 };
+            return (p[a.result] ?? 2) - (p[b.result] ?? 2);
+        });
 
     const getStatusBadge = (status: Rule5075Result) => {
         switch (status) {
@@ -104,10 +113,19 @@ export default function FiftySeventyFivePage() {
         <div className="space-y-6">
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                 <div>
-                    <h2 className="text-3xl font-bold tracking-tight">50/75 Rule Analysis</h2>
-                    <p className="text-muted-foreground">Diagnostic tool to separate Capability (Mean) vs Consistency (Variation) issues.</p>
+                    <h2 className="text-3xl font-bold tracking-tight">50/75 Rule Analysis (Q3 & Q4 Focus)</h2>
+                    <p className="text-muted-foreground">Diagnostic tool to identify and support agents in the 3rd and 4th Quartiles (Below Median).</p>
                 </div>
                 <div className="flex items-center gap-2">
+                    <div className="flex items-center gap-2 mr-4">
+                        <Button
+                            variant={showFocusOnly ? "secondary" : "ghost"}
+                            size="sm"
+                            onClick={() => setShowFocusOnly(!showFocusOnly)}
+                        >
+                            {showFocusOnly ? "Showing Q3/Q4 Only" : "Showing All Agents"}
+                        </Button>
+                    </div>
                     <Button variant="outline" onClick={handleExport} disabled={analysis.length === 0}>
                         <Download className="h-4 w-4 mr-2" />
                         Export
@@ -181,21 +199,28 @@ export default function FiftySeventyFivePage() {
                             </TableRow>
                         </TableHeader>
                         <TableBody>
-                            {analysis.map((row, i) => (
-                                <TableRow key={i}>
-                                    <TableCell className="font-medium">{row.agentName}</TableCell>
-                                    <TableCell>{row.agentTeam}</TableCell>
-                                    <TableCell>{getStatusBadge(row.result)}</TableCell>
-                                    <TableCell className="text-right font-mono">{row.median.toFixed(1)}</TableCell>
-                                    <TableCell className="text-right text-muted-foreground">{row.q1.toFixed(1)}</TableCell>
-                                    <TableCell className="text-right text-muted-foreground">{row.q3.toFixed(1)}</TableCell>
-                                    <TableCell className="text-sm">
-                                        {row.result === 'INCAPABLE' ? 'Coaching on Basics / Knowledge' :
-                                            row.result === 'INCONSISTENT' ? 'Focus on Workflow / Standardization' :
-                                                'Maintain / Reward'}
+                            {filteredAnalysis.length === 0 ? (
+                                <TableRow>
+                                    <TableCell colSpan={7} className="text-center h-24 text-muted-foreground">
+                                        No agents found matching criteria.
                                     </TableCell>
                                 </TableRow>
-                            ))}
+                            ) : (
+                                filteredAnalysis.map((row, i) => (
+                                    <TableRow key={i}>
+                                        <TableCell className="font-medium">{row.agentName}</TableCell>
+                                        <TableCell>{row.agentTeam}</TableCell>
+                                        <TableCell>{getStatusBadge(row.result)}</TableCell>
+                                        <TableCell className="text-right font-mono">{row.median.toFixed(1)}</TableCell>
+                                        <TableCell className="text-right text-muted-foreground">{row.q1.toFixed(1)}</TableCell>
+                                        <TableCell className="text-right text-muted-foreground">{row.q3.toFixed(1)}</TableCell>
+                                        <TableCell className="text-sm">
+                                            {row.result === 'INCAPABLE' ? 'Coaching on Basics / Knowledge' :
+                                                row.result === 'INCONSISTENT' ? 'Focus on Workflow / Standardization' :
+                                                    'Maintain / Reward'}
+                                        </TableCell>
+                                    </TableRow>
+                                )))}
                         </TableBody>
                     </Table>
                 </CardContent>

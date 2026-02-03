@@ -9,6 +9,7 @@ import { ScatterPlot } from '@/components/charts/ScatterPlot';
 import { Histogram } from '@/components/charts/Histogram';
 import { BoxPlot } from '@/components/charts/BoxPlot';
 import { Network, GitBranch, PenTool, BarChart3, ScatterChart as ScatterIcon, Sigma } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 
 export default function LSSToolsPage() {
     return (
@@ -40,7 +41,7 @@ export default function LSSToolsPage() {
                         <Sigma className="h-4 w-4" />
                         Distributions
                     </TabsTrigger>
-                    <TabsTrigger value="5whys" disabled className="flex items-center gap-2">
+                    <TabsTrigger value="5whys" className="flex items-center gap-2">
                         <PenTool className="h-4 w-4" />
                         5 Whys
                     </TabsTrigger>
@@ -129,6 +130,24 @@ export default function LSSToolsPage() {
                             ]}
                         />
                     </div>
+                </TabsContent>
+                <TabsContent value="5whys">
+                    <Card>
+                        <CardHeader>
+                            <CardTitle>5 Whys Analysis</CardTitle>
+                            <CardDescription>Iterative interrogative technique used to explore the cause-and-effect relationships.</CardDescription>
+                        </CardHeader>
+                        <CardContent>
+                            <div className="flex flex-col gap-4">
+                                <div className="p-4 border rounded-md bg-muted/50">
+                                    <h3 className="font-semibold mb-2">Problem Statement</h3>
+                                    <p className="text-sm text-muted-foreground">Define the problem clearly...</p>
+                                </div>
+                                {/* Placeholder for interactive 5 Whys tool */}
+                                <Button>Start New 5 Whys Session</Button>
+                            </div>
+                        </CardContent>
+                    </Card>
                 </TabsContent>
             </Tabs>
         </div>

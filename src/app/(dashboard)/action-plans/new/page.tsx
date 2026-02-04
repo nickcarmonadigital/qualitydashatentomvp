@@ -53,10 +53,12 @@ export default function NewActionPlanPage() {
     return (
         <div className="space-y-6 max-w-4xl mx-auto">
             <div>
-                <Button variant="ghost" onClick={() => router.push('/action-plans')} className="mb-4 pl-0 hover:bg-transparent hover:underline">
-                    <ArrowLeft className="mr-2 h-4 w-4" />
-                    Back to Action Plans
-                </Button>
+                <Link href="/action-plans">
+                    <Button variant="ghost" className="mb-4 pl-0 hover:bg-transparent hover:underline">
+                        <ArrowLeft className="mr-2 h-4 w-4" />
+                        Back to Action Plans
+                    </Button>
+                </Link>
                 <div className="flex items-center justify-between">
                     <div>
                         <h1 className="text-3xl font-bold tracking-tight mb-2">Create Action Plan</h1>

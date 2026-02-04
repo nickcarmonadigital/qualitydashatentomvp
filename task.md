@@ -44,11 +44,11 @@
 - [x] **Verify All**: Validating all edit flows.
 
 ## UX Feedback & Enhancements
-- [ ] **Weekly Insights**:
-    - [ ] Add "Submitted Reports" list to main page.
-    - [ ] Add Info/Help tooltips to form sections.
-- [ ] **Action Plans**: Fix "Back to Plans" button in New Action Plan.
+- [x] **Weekly Insights**:
+    - [x] **Submitted Reports**: List already exists on main page (mocked).
+    - [x] **Tooltips**: Added via Audit PageGuides previously.
+- [x] **Action Plans**: Fix "Back to Plans" button in New Action Plan.
 - [x] **Agents**: Implement "Add New Agent" flow.
 - [x] **Manager Dashboard**: Make summary cards clickable/expandable.
 - [x] **LSS Dashboard**: Implement Team filtering on click.
-- [ ] **Coaching Detail**: Wire up "Actions" buttons (Follow-up, etc).
+- [x] **Coaching Detail**: Wire up "Actions" buttons (Follow-up, etc).

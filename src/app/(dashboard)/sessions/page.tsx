@@ -6,6 +6,19 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { InfoTooltip } from '@/components/ui/info-tooltip';
+import { Label } from '@/components/ui/label';
+import { Input } from '@/components/ui/input';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import {
+    Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogFooter,
+    DialogHeader,
+    DialogTitle,
+    DialogTrigger,
+} from "@/components/ui/dialog";
 import {
     Table,
     TableBody,
@@ -42,10 +55,7 @@ export default function SessionsPage() {
         setIsDetailOpen(true);
     };
 
-    import { InfoTooltip } from '@/components/ui/info-tooltip';
-    import { Label } from '@/components/ui/label';
-    import { Input } from '@/components/ui/input';
-    import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+
 
     // ...
 

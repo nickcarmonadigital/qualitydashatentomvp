@@ -5,6 +5,8 @@ import { Label } from '@/components/ui/label';
 import { Separator } from '@/components/ui/separator';
 import { Switch } from '@/components/ui/switch';
 import { toast } from 'sonner';
+'use client';
+
 import { InfoTooltip } from '@/components/ui/info-tooltip';
 import { Clock, Target, Users, Shield } from 'lucide-react';
 import { useState } from 'react';

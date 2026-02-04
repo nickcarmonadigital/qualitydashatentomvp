@@ -4,6 +4,16 @@ import Link from 'next/link';
 import { useState, useEffect } from 'react';
 import { getAgents, getInterventionCandidates } from '@/lib/mock-service';
 import { PageGuide } from '@/components/ui/page-guide';
+import {
+    Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogFooter,
+    DialogHeader,
+    DialogTitle,
+    DialogTrigger,
+} from "@/components/ui/dialog";
+import { createAgent } from '@/lib/mock-service';
 import { Agent } from '@/types/domain';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
@@ -103,15 +113,7 @@ export default function AgentsPage() {
         exportToCSV(data, 'agents_export');
     };
 
-    import {
-        Dialog,
-        DialogContent,
-        DialogDescription,
-        DialogFooter,
-        DialogHeader,
-        DialogTitle,
-        DialogTrigger,
-    } from "@/components/ui/dialog";
+
     import { createAgent } from '@/lib/mock-service';
 
     // ... other imports

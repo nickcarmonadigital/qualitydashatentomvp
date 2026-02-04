@@ -90,7 +90,6 @@ export default function UserManagementPage() {
                                     className="pl-8"
                                     value={search}
                                     onChange={(e) => setSearch(e.target.value)}
-                                />
                             </div>
                         </div>
 

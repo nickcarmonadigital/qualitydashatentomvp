@@ -203,7 +203,7 @@ export default function CoachingPage() {
                             <p className="text-center text-muted-foreground py-8">No coaching sessions found.</p>
                         ) : (
                             filteredSessions.map((session) => (
-                                <Link key={session.id} href={`/ coaching / ${session.id} `}>
+                                <Link key={session.id} href={`/coaching/${session.id}`}>
                                     <div className="flex items-center justify-between p-4 rounded-lg border hover:bg-slate-50 transition-colors cursor-pointer group">
                                         <div className="flex items-center gap-4">
                                             <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">

@@ -27,13 +27,30 @@ export default function CoachingSessionDetailPage() {
     const params = useParams();
     const router = useRouter();
     const [session, setSession] = useState<SessionDetail | null>(null);
+    const [notFound, setNotFound] = useState(false);
 
     useEffect(() => {
         if (params.id) {
             const data = getCoachingSessionById(params.id as string);
-            setSession(data as SessionDetail);
+            if (data) {
+                setSession(data as SessionDetail);
+            } else {
+                setNotFound(true);
+            }
         }
     }, [params.id]);
+
+    if (notFound) {
+        return (
+            <div className="flex flex-col items-center justify-center h-64 gap-4">
+                <p className="text-muted-foreground text-lg">Session not found.</p>
+                <Button variant="outline" onClick={() => router.push('/coaching')}>
+                    <ArrowLeft className="mr-2 h-4 w-4" />
+                    Back to Sessions
+                </Button>
+            </div>
+        );
+    }
 
     if (!session) {
         return (

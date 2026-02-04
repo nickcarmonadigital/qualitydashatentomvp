@@ -80,7 +80,7 @@ const SCENARIOS: Record<string, TourStep[]> = {
         {
             title: "Weekly Insights",
             content: "Review qualitative feedback from team leads.",
-            route: "/weekly-insight"
+            route: "/weekly-insight/new"
         }
     ],
     LSS: [

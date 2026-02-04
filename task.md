@@ -30,4 +30,4 @@
 - [x] **LSS Tab Switching**: Enable deep linking in `lss-tools/page.tsx` (e.g., `?tab=randomizer`) so the tour shows the correct content.
 - [x] **Modular Tours**: Refactor `OnboardingTour` to support section-specific flows (Performance, Coaching, Ops).
 - [x] **Sidebar Tour Buttons**: Add "Play" buttons to Sidebar Group Headers.
-- [ ] **Verify Deployment**: Push execution.
+- [x] **Verify Deployment**: Push execution.

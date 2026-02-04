@@ -44,9 +44,14 @@ const menuItems = {
         { name: 'Resources', href: '/resources', icon: BookOpen },
     ],
     admin: [
+        { name: 'Admin Overview', href: '/admin', icon: LayoutDashboard },
         { name: 'User Management', href: '/admin/users', icon: Users },
         { name: 'Global Settings', href: '/admin/settings', icon: Settings },
         { name: 'System Audit', href: '/admin/audit', icon: ShieldAlert },
+    ],
+    support: [
+        { name: 'User Manual', href: '/manual', icon: BookOpen },
+        { name: 'Resources', href: '/resources', icon: FileText },
     ]
 };
 
@@ -100,11 +105,19 @@ const SidebarGroup = ({ title, items, isOpen, onToggle, scenario }: { title: str
 
 export function Sidebar() {
     const isAdmin = true;
+    const groupLabels: Record<string, string> = {
+        performance: 'Performance',
+        coaching: 'Coaching',
+        lss: 'LSS Tools',
+        admin: 'Admin',
+        support: 'Help & Support'
+    };
     const [openGroups, setOpenGroups] = useState<Record<string, boolean>>({
         performance: true,
         coaching: true,
         lss: false,
-        admin: false
+        admin: true,
+        support: true
     });
 
     const toggleGroup = (key: string) => {
@@ -158,6 +171,13 @@ export function Sidebar() {
                     items={menuItems.admin}
                     isOpen={openGroups.admin}
                     onToggle={() => toggleGroup('admin')}
+                />
+
+                <SidebarGroup
+                    title="Help & Support"
+                    items={menuItems.support}
+                    isOpen={openGroups.support}
+                    onToggle={() => toggleGroup('support')}
                 />
             </nav>
 

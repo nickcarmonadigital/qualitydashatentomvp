@@ -9,6 +9,7 @@ let cachedScores: Score[] = [];
 let cachedActionPlans: ActionPlan[] = [];
 let cachedCoachingSessions: CoachingSession[] = [];
 let cachedCoachingAudits: CoachingAudit[] = [];
+let cachedWeeklyInsights: any[] = [];
 
 // Mock Data for Training/Calibration
 let trainingSessions: TrainingSession[] = [
@@ -95,15 +96,23 @@ export const getMockData = () => {
             issue_resolved: false,
             agent_commitment: 'I will set a daily alarm.',
             supervisor_commitment: 'I will check in on arrival time for 1 week.'
+                supervisor_commitment: 'I will check in on arrival time for 1 week.'
         });
-    }
-    return {
-        agents: cachedAgents,
-        kpis: cachedKPIs,
-        scores: cachedScores,
-        actionPlans: cachedActionPlans,
-        coachingSessions: cachedCoachingSessions
-    };
+
+        cachedWeeklyInsights = [
+            { id: 'week-6', week: 'Week 6 (Feb 02 - Feb 08)', status: 'draft', author: 'You', summary: 'Leadership summary pending...' },
+            { id: 'week-5', week: 'Week 5 (Jan 26 - Feb 01)', status: 'submitted', author: 'You', summary: 'Strong KPI recovery in Spanish queues.' },
+            { id: 'week-4', week: 'Week 4 (Jan 19 - Jan 25)', status: 'approved', author: 'You', summary: 'Q1 Training deployment successful.' },
+        ];
+    });
+}
+return {
+    agents: cachedAgents,
+    kpis: cachedKPIs,
+    scores: cachedScores,
+    actionPlans: cachedActionPlans,
+    coachingSessions: cachedCoachingSessions
+};
 }
 
 export const getActionPlans = () => {
@@ -601,7 +610,25 @@ export const getWeeklyInsightById = (id: string) => {
     };
 }
 
-export const updateWeeklyInsight = (id: string, data: any) => {
-    // Mock update
-    return true;
+// Mock update
+return true;
+}
+
+export const getWeeklyInsights = () => {
+    // Ensure cache is populated
+    if (cachedWeeklyInsights.length === 0) {
+        getMockData();
+    }
+    return cachedWeeklyInsights;
+}
+
+export const createWeeklyInsight = (insight: any) => {
+    const newInsight = {
+        ...insight,
+        id: `week-${Date.now()}`,
+        status: 'submitted', // Default to submmitted for demo flow
+        author: 'You'
+    };
+    cachedWeeklyInsights.unshift(newInsight);
+    return newInsight;
 }

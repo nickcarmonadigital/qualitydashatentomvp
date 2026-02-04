@@ -6,21 +6,24 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Plus, FileText, ArrowRight, Calendar } from 'lucide-react';
-import { getWeeklyInsightById } from '@/lib/mock-service';
+import { getWeeklyInsights } from '@/lib/mock-service';
+import { InfoTooltip } from '@/components/ui/info-tooltip';
 
 export default function WeeklyInsightDashboard() {
-    // Mock History Data
-    const history = [
-        { id: 'week-6', week: 'Week 6 (Feb 02 - Feb 08)', status: 'draft', author: 'You', summary: 'Leadership summary pending...' },
-        { id: 'week-5', week: 'Week 5 (Jan 26 - Feb 01)', status: 'submitted', author: 'You', summary: 'Strong KPI recovery in Spanish queues.' },
-        { id: 'week-4', week: 'Week 4 (Jan 19 - Jan 25)', status: 'approved', author: 'You', summary: 'Q1 Training deployment successful.' },
-    ];
+    const [history, setHistory] = useState<any[]>([]);
+
+    useEffect(() => {
+        setHistory(getWeeklyInsights());
+    }, []);
 
     return (
         <div className="space-y-8 animate-fade-in">
             <div className="flex items-center justify-between">
                 <div>
-                    <h1 className="text-3xl font-bold tracking-tight">Weekly Insights</h1>
+                    <h1 className="text-3xl font-bold tracking-tight">
+                        Weekly Insights
+                        <InfoTooltip content="Weekly operational reports summarizing KPI performance, audit findings, and strategic actions." />
+                    </h1>
                     <p className="text-muted-foreground">Manage and review operational reports.</p>
                 </div>
                 <Link href="/weekly-insight/new">

@@ -9,6 +9,7 @@ import { Label } from '@/components/ui/label';
 import { getMockData } from '@/lib/mock-service';
 import { pickAuditTargets, AuditAssignment, pickFromCSVData, CSVTicketData } from '@/lib/lss/audit-picker';
 import { RefreshCcw, AlertCircle, Ticket, Upload, Download, FileSpreadsheet, X, Check } from 'lucide-react';
+import { InfoTooltip } from '@/components/ui/info-tooltip';
 
 // Sample CSV template content
 const SAMPLE_CSV = `agent_name,agent_team,ticket_id,timestamp,category
@@ -138,7 +139,10 @@ export default function AuditRandomizerPage() {
             <div className="flex items-center justify-between">
                 <div className="space-y-1">
                     <div className="flex items-center gap-3">
-                        <h2 className="text-3xl font-bold tracking-tight">Audit Randomizer</h2>
+                        <h2 className="text-3xl font-bold tracking-tight">
+                            Audit Randomizer
+                            <InfoTooltip content="Randomly select tickets or calls for audit based on agent performance quartiles or uploaded data." />
+                        </h2>
                         <Badge variant="secondary" className="text-sm px-3 py-1">
                             DEMO FEATURE
                         </Badge>

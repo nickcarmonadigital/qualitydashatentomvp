@@ -33,22 +33,31 @@
 - [x] **Fix Tour Flashing**: Resolve navigation loop in Performance Tour (Weekly Insight step).
 - [x] **Fix Coaching Loading**: Debug infinite loading state in `/coaching/sessions` (or equivalent).
 - [x] **Architecture Plan**: Document Multi-Tenant / Multi-Contract strategy.
-- [x] **Verify Fixes**: Ensure tour is stable and pages load.
-- [x] **Fix "Session Not Found"**: Added hardcoded active session `CS-FIXED-001` to mock data.
-- [x] **Editable Coaching**: Created `/coaching/[id]/edit` and added UI entry point.
-- [x] **Universal Editability**:
-    - [x] **Agents**: Create `/agents/[id]/edit` and link from Detail page.
-    - [x] **Weekly Insights**: Create `/weekly-insight/[id]/edit` (if applicable) or ensure "New" form handles edits.
-    - [x] **Action Plans**: Verified `/action-plans/[id]/edit` exists.
-    - [x] **KPI Targets**: Verified Admin Settings allow editing.
-- [x] **Verify All**: Validating all edit flows.
+# Project Task List
 
-## UX Feedback & Enhancements
-- [x] **Weekly Insights**:
-    - [x] **Submitted Reports**: List already exists on main page (mocked).
-    - [x] **Tooltips**: Added via Audit PageGuides previously.
-- [x] **Action Plans**: Fix "Back to Plans" button in New Action Plan.
-- [x] **Agents**: Implement "Add New Agent" flow.
-- [x] **Manager Dashboard**: Make summary cards clickable/expandable.
-- [x] **LSS Dashboard**: Implement Team filtering on click.
-- [x] **Coaching Detail**: Wire up "Actions" buttons (Follow-up, etc).
+## Phase 1: Navigation & Admin Structure
+- [ ] **Admin Sidebar**: Add "Admin" link to the side menu (Items 8, 16).
+- [ ] **Settings Merge**: Move all settings to `/admin/settings`, deprecate `/settings`, add InfoTooltips (Items 11, 12).
+- [ ] **Action Plans**: Verify and fix "Back to Plans" button behavior (Item 2).
+- [ ] **Responsive Check**: Ensure layouts work on smaller screens (Item 15).
+
+## Phase 2: Feature Enhancements
+- [ ] **Agents**: Ensure "Add Agent" works and adds to active list (Item 3).
+- [ ] **Manager Dashboard**: Make summary cards clickable/expandable (Item 4).
+- [ ] **LSS Dashboard**: Verify Team Filter (Item 6) & Add Tooltip to Audit Randomizer (Item 7).
+- [ ] **Weekly Insights**: Show "Submitted Reports" list & Add Tooltips (Item 1).
+- [ ] **Sessions**: Add Tooltips, Calibration Scores/Failing logic, Teach-back creation (Item 14).
+- [ ] **Resources**: Modernize UI, Add Tooltips, Document View/Create (Item 13).
+
+## Phase 3: Admin Features
+- [ ] **Admin Users**: Fix "Invite User" button & Add Tooltips (Item 9).
+- [ ] **Admin Audit**: Clarify purpose/UI for auditors (Item 10).
+- [ ] **General**: Fix any other non-working buttons (Item 5).
+
+## Phase 4: Documentation & Tour
+- [ ] **Tour**: Update full onboarding tour (Item 17).
+- [ ] **Manual**: Create "Platform User Manual" for leadership (Item 18).
+
+## Completed
+- [x] Initial Build & Deployment
+- [x] Basic Page Structure

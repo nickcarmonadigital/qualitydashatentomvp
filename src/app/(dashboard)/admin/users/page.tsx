@@ -27,12 +27,26 @@ import { toast } from 'sonner';
 
 import { InfoTooltip } from '@/components/ui/info-tooltip';
 
+import {
+    Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogFooter,
+    DialogHeader,
+    DialogTitle,
+    DialogTrigger,
+} from "@/components/ui/dialog";
+import { Label } from "@/components/ui/label";
+
 export default function UserManagementPage() {
     const [users, setUsers] = useState<Agent[]>([]);
     const [filteredUsers, setFilteredUsers] = useState<Agent[]>([]);
     const [search, setSearch] = useState('');
+    const [isInviteOpen, setIsInviteOpen] = useState(false);
 
-    const handleInviteUser = () => {
+    const handleInviteUser = (e: React.FormEvent) => {
+        e.preventDefault();
+        setIsInviteOpen(false);
         toast.success("Invitation Sent", {
             description: "An email has been sent to the user with setup instructions."
         });
@@ -86,10 +100,59 @@ export default function UserManagementPage() {
                     <p className="text-muted-foreground">Manage user roles, access permissions, and account status.</p>
                 </div>
                 <div>
-                    <Button onClick={handleInviteUser}>
-                        <UserCog className="mr-2 h-4 w-4" />
-                        Invite User
-                    </Button>
+                    <Dialog open={isInviteOpen} onOpenChange={setIsInviteOpen}>
+                        <DialogTrigger asChild>
+                            <Button>
+                                <UserCog className="mr-2 h-4 w-4" />
+                                Invite User
+                            </Button>
+                        </DialogTrigger>
+                        <DialogContent>
+                            <DialogHeader>
+                                <DialogTitle>Invite New User</DialogTitle>
+                                <DialogDescription>
+                                    Send an invitation to a new team member. They will receive an email to set up their account.
+                                </DialogDescription>
+                            </DialogHeader>
+                            <form onSubmit={handleInviteUser}>
+                                <div className="grid gap-4 py-4">
+                                    <div className="grid grid-cols-4 items-center gap-4">
+                                        <Label htmlFor="name" className="text-right">
+                                            Name
+                                        </Label>
+                                        <Input id="name" placeholder="John Doe" className="col-span-3" required />
+                                    </div>
+                                    <div className="grid grid-cols-4 items-center gap-4">
+                                        <Label htmlFor="email" className="text-right">
+                                            Email
+                                        </Label>
+                                        <Input id="email" type="email" placeholder="john@example.com" className="col-span-3" required />
+                                    </div>
+                                    <div className="grid grid-cols-4 items-center gap-4">
+                                        <Label htmlFor="role" className="text-right">
+                                            Role
+                                        </Label>
+                                        <div className="col-span-3">
+                                            <Select defaultValue="Agent">
+                                                <SelectTrigger>
+                                                    <SelectValue placeholder="Select a role" />
+                                                </SelectTrigger>
+                                                <SelectContent>
+                                                    <SelectItem value="Agent">Agent</SelectItem>
+                                                    <SelectItem value="Team Lead">Team Lead</SelectItem>
+                                                    <SelectItem value="QA Specialist">QA Specialist</SelectItem>
+                                                    <SelectItem value="Admin">Admin</SelectItem>
+                                                </SelectContent>
+                                            </Select>
+                                        </div>
+                                    </div>
+                                </div>
+                                <DialogFooter>
+                                    <Button type="submit">Send Invitation</Button>
+                                </DialogFooter>
+                            </form>
+                        </DialogContent>
+                    </Dialog>
                 </div>
             </div>
 

@@ -1,5 +1,6 @@
 'use client';
 
+import { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -58,11 +59,41 @@ import { InfoTooltip } from '@/components/ui/info-tooltip';
 
 // ... existing imports
 
+import {
+    Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogFooter,
+    DialogHeader,
+    DialogTitle,
+    DialogTrigger,
+} from "@/components/ui/dialog";
+import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from '@/components/ui/select';
+
 export default function ResourcesPage() {
+    const [isRequestOpen, setIsRequestOpen] = useState(false);
+
     const handleDownload = (title: string) => {
         // In a real app, this would trigger a file download
         toast.info(`Downloading: ${title}`, {
             description: "File download started..."
+        });
+    };
+
+    const handleRequestDoc = (e: React.FormEvent) => {
+        e.preventDefault();
+        setIsRequestOpen(false);
+        toast.success("Request Submitted", {
+            description: "Your document request has been sent to the content team."
         });
     };
 
@@ -76,10 +107,58 @@ export default function ResourcesPage() {
                     </h2>
                     <p className="text-muted-foreground">Standard Operating Procedures and Knowledge Base.</p>
                 </div>
-                <Button>
-                    <BookOpen className="mr-2 h-4 w-4" />
-                    Request New Doc
-                </Button>
+                <Dialog open={isRequestOpen} onOpenChange={setIsRequestOpen}>
+                    <DialogTrigger asChild>
+                        <Button>
+                            <BookOpen className="mr-2 h-4 w-4" />
+                            Request New Doc
+                        </Button>
+                    </DialogTrigger>
+                    <DialogContent>
+                        <DialogHeader>
+                            <DialogTitle>Request New Document</DialogTitle>
+                            <DialogDescription>
+                                Need a new SOP or Work Instruction? Describe it below.
+                            </DialogDescription>
+                        </DialogHeader>
+                        <form onSubmit={handleRequestDoc}>
+                            <div className="grid gap-4 py-4">
+                                <div className="grid grid-cols-4 items-center gap-4">
+                                    <Label htmlFor="title" className="text-right">
+                                        Title
+                                    </Label>
+                                    <Input id="title" placeholder="e.g. Handling Difficult Customers" className="col-span-3" required />
+                                </div>
+                                <div className="grid grid-cols-4 items-center gap-4">
+                                    <Label htmlFor="type" className="text-right">
+                                        Type
+                                    </Label>
+                                    <div className="col-span-3">
+                                        <Select defaultValue="sop">
+                                            <SelectTrigger>
+                                                <SelectValue placeholder="Select type" />
+                                            </SelectTrigger>
+                                            <SelectContent>
+                                                <SelectItem value="sop">SOP</SelectItem>
+                                                <SelectItem value="wi">Work Instruction</SelectItem>
+                                                <SelectItem value="guide">Guide</SelectItem>
+                                            </SelectContent>
+                                        </Select>
+                                    </div>
+                                </div>
+                                <div className="grid grid-cols-4 items-start gap-4">
+                                    <Label htmlFor="description" className="text-right pt-3">
+                                        Details
+                                    </Label>
+                                    <Textarea id="description" placeholder="Describe the process or topic..." className="col-span-3" required />
+                                </div>
+                            </div>
+                            <DialogFooter>
+                                <Button type="submit">Submit Request</Button>
+                            </DialogFooter>
+                        </form>
+                    </DialogContent>
+                </Dialog>
             </div>
 
             <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
@@ -120,7 +199,7 @@ export default function ResourcesPage() {
                 ))}
 
                 {/* Upload Placeholder */}
-                <Card className="border-dashed border-2 bg-slate-50/50 flex flex-col items-center justify-center p-6 text-center hover:bg-slate-50 transition-colors cursor-pointer group">
+                <Card className="border-dashed border-2 bg-slate-50/50 flex flex-col items-center justify-center p-6 text-center hover:bg-slate-50 transition-colors cursor-pointer group" onClick={() => toast.info("Upload Locked", { description: "Requires Admin Access" })}>
                     <div className="p-4 bg-white rounded-full shadow-sm mb-3 group-hover:scale-110 transition-transform">
                         <FileText className="h-8 w-8 text-slate-400" />
                     </div>
@@ -128,7 +207,7 @@ export default function ResourcesPage() {
                     <p className="text-sm text-slate-500 max-w-[200px] mt-1 mb-4">
                         Drag & drop PDF files here to add to the library.
                     </p>
-                    <Button variant="outline" size="sm" onClick={() => toast.info("Upload Locked", { description: "Requires Admin Access" })}>
+                    <Button variant="outline" size="sm">
                         Browse Files
                     </Button>
                 </Card>

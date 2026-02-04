@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
+import { useSearchParams } from 'next/navigation';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -43,7 +44,10 @@ const getStatusBadge = (status: string) => {
     return <Badge variant={style.variant}>{style.label}</Badge>;
 };
 
+import { useSearchParams } from 'next/navigation';
+
 export default function CoachingPage() {
+    const searchParams = useSearchParams();
     const [sessions, setSessions] = useState<CoachingSession[]>([]);
     const [agents, setAgents] = useState<Agent[]>([]);
     const [filter, setFilter] = useState<string>('all');
@@ -53,7 +57,13 @@ export default function CoachingPage() {
         const allAgents = getAgents();
         setSessions(allSessions);
         setAgents(allAgents);
-    }, []);
+
+        // Apply filter from URL if present
+        const urlFilter = searchParams.get('filter');
+        if (urlFilter) {
+            setFilter(urlFilter);
+        }
+    }, [searchParams]);
 
     const getAgentName = (agentId: string) => {
         return agents.find(a => a.id === agentId)?.name || 'Unknown';

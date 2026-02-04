@@ -61,6 +61,11 @@ const SCENARIOS: Record<string, TourStep[]> = {
             route: "/admin/settings"
         },
         {
+            title: "9. Documentation",
+            content: "Need help? Access the comprehensive User Manual and SOP Library in the Support section.",
+            route: "/manual"
+        },
+        {
             title: "Cycle Complete",
             content: "You have completed the Continuous Improvement loop. The dashboard will now reflect the impact of your actions.",
             route: "/dashboard"

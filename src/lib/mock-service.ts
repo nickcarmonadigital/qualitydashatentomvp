@@ -1,6 +1,5 @@
 import { Agent, KPI, Score, ActionPlan, CoachingSession } from '@/types/domain';
-import { generateAgents, generateKPIs, generateScores, generateActionPlans } from '@/script/seed_data';
-import { generateCoachingSessions } from '@/script/seed_coaching';
+import { generateAgents, generateKPIs, generateScores, generateActionPlans, generateCoachingSessions } from '@/script/seed_data';
 
 // Singleton-ish pattern to keeping data consistent for the User Session (Mock)
 let cachedAgents: Agent[] = [];

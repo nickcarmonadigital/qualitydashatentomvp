@@ -119,6 +119,7 @@ export default function NewCoachingSessionPage() {
 
                 outcome: issueResolved ? 'improved' : 'pending',
                 follow_up_date: followUpDate ? format(followUpDate, 'yyyy-MM-dd') : undefined,
+                manager_notified: false,
             });
 
             toast.success("Coaching session created successfully");

@@ -250,6 +250,23 @@ export const getManagerDashboardData = () => {
     };
 }
 
+export const createCoachingSession = (sessionData: Omit<CoachingSession, 'id' | 'status'>): CoachingSession => {
+    const { coachingSessions } = getMockData();
+
+    // Generate ID
+    const newId = `coaching-new-${Date.now()}`;
+
+    const newSession: CoachingSession = {
+        ...sessionData,
+        id: newId,
+        status: 'scheduled', // Default for new sessions
+        manager_notified: false // Default
+    };
+
+    coachingSessions.unshift(newSession); // Add to beginning
+    return newSession;
+}
+
 export const getActionPlanById = (id: string) => {
     const { actionPlans, agents } = getMockData();
     const plan = actionPlans.find(p => p.id === id);

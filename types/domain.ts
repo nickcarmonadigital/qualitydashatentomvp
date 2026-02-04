@@ -107,11 +107,20 @@ export interface CoachingSession {
     session_date: string;
     coaching_type: CoachingType;
     trigger_score_id?: string;  // Links to failed QA score
-    trigger_kpi_id?: string;    // Links to KPI that declined
+    trigger_kpi_ids?: string[]; // Array of links to KPIs that declined
+
+    // Diagnosis
+    problem_identified: boolean;
+    issue_resolved: boolean;
 
     // Session Content
     notes: string;
-    key_observations: string[];
+    key_observations: string[]; // Primary/Secondary Opportunities
+
+    // Commitments
+    agent_commitment: string;
+    supervisor_commitment: string;
+
     action_items: string[];
     follow_up_date?: string;
 

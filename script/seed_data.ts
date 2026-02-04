@@ -362,10 +362,17 @@ export const generateCoachingSessions = (agents: Agent[], atRiskAgentIds: string
                 session_date: sessionDate.toISOString().split('T')[0],
                 coaching_type: coachingType,
                 trigger_score_id: coachingType === 'qa_failure' ? `score-${agentId}-quality-w${i}` : undefined,
-                trigger_kpi_id: coachingType === 'kpi_decline' ? 'kpi-quality' : undefined,
+                trigger_kpi_ids: coachingType === 'kpi_decline' ? ['kpi-quality'] : [],
                 notes: `Coaching session ${i + 1} with ${persona.name}. ${observations[persona.story as keyof typeof observations]?.[0] || 'Regular check-in session.'}`,
                 key_observations: observations[persona.story as keyof typeof observations] || ['Standard coaching session'],
                 action_items: actionItems[persona.story as keyof typeof actionItems] || [],
+
+                // New Fields
+                problem_identified: coachingType !== 'routine',
+                issue_resolved: outcome === 'improved',
+                agent_commitment: `${persona.name} commits to focusing on the identified action items over the next week.`,
+                supervisor_commitment: `I will check in with ${persona.name} mid-week to ensure they have the support they need.`,
+
                 follow_up_date: i === 0 ? new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0] : undefined,
                 outcome,
                 manager_notified: coachingType !== 'routine' && i === 0,

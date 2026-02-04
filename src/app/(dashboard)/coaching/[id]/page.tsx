@@ -103,9 +103,40 @@ export default function CoachingSessionDetailPage() {
                                 </div>
                             </div>
 
-                            <div className="pt-4 border-t">
-                                <p className="text-sm text-muted-foreground mb-2">Session Notes</p>
-                                <p className="text-sm whitespace-pre-wrap">{session.notes}</p>
+                            <div className="pt-4 border-t space-y-4">
+                                <div>
+                                    <p className="text-sm text-muted-foreground mb-1">Diagnosis</p>
+                                    <div className="flex gap-4">
+                                        <Badge variant={session.problem_identified ? "default" : "secondary"}>
+                                            Problem Identified: {session.problem_identified ? 'Yes' : 'No'}
+                                        </Badge>
+                                        <Badge variant={session.issue_resolved ? "default" : "outline"}>
+                                            Issue Resolved: {session.issue_resolved ? 'Yes' : 'No'}
+                                        </Badge>
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <p className="text-sm text-muted-foreground mb-2">Session Summary</p>
+                                    <p className="text-sm whitespace-pre-wrap bg-slate-50 p-3 rounded-md border">{session.notes}</p>
+                                </div>
+
+                                {(session.agent_commitment || session.supervisor_commitment) && (
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2">
+                                        {session.agent_commitment && (
+                                            <div>
+                                                <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-1">Agent Commitment</p>
+                                                <p className="text-sm italic text-slate-700">"{session.agent_commitment}"</p>
+                                            </div>
+                                        )}
+                                        {session.supervisor_commitment && (
+                                            <div>
+                                                <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-1">Supervisor Commitment</p>
+                                                <p className="text-sm italic text-slate-700">"{session.supervisor_commitment}"</p>
+                                            </div>
+                                        )}
+                                    </div>
+                                )}
                             </div>
                         </CardContent>
                     </Card>

@@ -92,3 +92,34 @@ export interface ActionPlan {
     correction: string;
     causal_category: ErrorCategory; // Fishbone category
 }
+
+// Coaching Types
+export type CoachingType = 'qa_failure' | 'kpi_decline' | 'behavioral' | 'skills_gap' | 'routine';
+export type CoachingOutcome = 'improved' | 'no_change' | 'declined' | 'pending';
+export type CoachRole = 'team_lead' | 'qa_analyst' | 'sme' | 'manager';
+
+export interface CoachingSession {
+    id: string;
+    agent_id: string;
+    coach_id: string;
+    coach_name: string;
+    coach_role: CoachRole;
+    session_date: string;
+    coaching_type: CoachingType;
+    trigger_score_id?: string;  // Links to failed QA score
+    trigger_kpi_id?: string;    // Links to KPI that declined
+
+    // Session Content
+    notes: string;
+    key_observations: string[];
+    action_items: string[];
+    follow_up_date?: string;
+
+    // Outcomes
+    outcome: CoachingOutcome;
+    linked_action_plan_id?: string;
+    manager_notified: boolean;
+
+    status: 'scheduled' | 'completed' | 'follow_up_required' | 'auto_generated';
+}
+

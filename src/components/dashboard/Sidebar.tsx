@@ -13,7 +13,9 @@ import {
     LogOut,
     ShieldAlert,
     PenTool,
-    ClipboardList
+    ClipboardList,
+    MessageSquare,
+    ShieldCheck
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { signOut } from 'next-auth/react';
@@ -22,6 +24,8 @@ const navItems = [
     { name: 'Dashboard', href: '/dashboard', icon: LayoutDashboard },
     { name: 'Weekly Insights', href: '/weekly-insight', icon: FileText },
     { name: 'Agent Performance', href: '/agents', icon: Users },
+    { name: 'Coaching', href: '/coaching', icon: MessageSquare },
+    { name: 'Manager View', href: '/manager', icon: ShieldCheck },
     { name: 'Six Sigma Tools', href: '/lss-tools', icon: Target },
     { name: '50/75 Analysis', href: '/fifty-seventy-five', icon: Target },
     { name: 'Action Plans', href: '/action-plans', icon: ClipboardList },

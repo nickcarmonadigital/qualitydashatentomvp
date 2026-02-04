@@ -13,13 +13,30 @@ import { LeadershipSummarySection } from '@/components/lss-tools/insight-form/Le
 
 import { Badge } from '@/components/ui/badge';
 import { FileCheck, Save, Send } from 'lucide-react';
+import { useSearchParams } from 'next/navigation';
+import { useEffect } from 'react';
+import { getWeeklyInsightById, updateWeeklyInsight } from '@/lib/mock-service';
 
 import { toast } from 'sonner';
 
 export default function NewInsightPage() {
+  const searchParams = useSearchParams();
+  const editId = searchParams.get('editId');
+
   const [activeTab, setActiveTab] = useState('kpi');
   const [status, setStatus] = useState<'draft' | 'submitted' | 'approved'>('draft');
   const [summary, setSummary] = useState('');
+
+  useEffect(() => {
+    if (editId) {
+      const data = getWeeklyInsightById(editId);
+      if (data) {
+        setSummary(data.summary || '');
+        setStatus(data.status as any);
+        toast.info("Editing Mode", { description: "Loaded existing report." });
+      }
+    }
+  }, [editId]);
 
   const handleSubmit = () => {
     if (!summary.trim()) {
@@ -28,10 +45,15 @@ export default function NewInsightPage() {
       return;
     }
 
-    setStatus('submitted');
-    toast.success("Report Submitted", {
-      description: "Your weekly insight has been submitted for approval.",
-    });
+    if (editId) {
+      updateWeeklyInsight(editId, { summary, status: 'submitted' });
+      toast.success("Report Updated", { description: "Changes saved." });
+    } else {
+      setStatus('submitted');
+      toast.success("Report Submitted", {
+        description: "Your weekly insight has been submitted for approval.",
+      });
+    }
   };
 
   return (

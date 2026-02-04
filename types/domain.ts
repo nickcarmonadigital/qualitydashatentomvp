@@ -18,7 +18,6 @@ export interface Agent {
     role: string;
     team: string;
     tenure_days: number;
-    tenure_days: number;
     status: 'active' | 'inactive' | 'on_leave';
     email?: string;
     metrics: {

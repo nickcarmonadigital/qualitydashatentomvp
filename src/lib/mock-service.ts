@@ -541,3 +541,24 @@ export const createCoachingAudit = (auditData: Omit<CoachingAudit, 'id' | 'calcu
     cachedCoachingAudits.push(newAudit);
     return newAudit;
 }
+
+// Weekly Insight Mock Functions
+export const getWeeklyInsightById = (id: string) => {
+    // In a real app, this would fetch from DB. 
+    // For now we just return a dummy populated object if ID exists, or null.
+    if (!id) return null;
+
+    return {
+        id,
+        week_start: '2025-02-02',
+        author_id: '1',
+        status: 'draft',
+        summary: 'Leadership Summary loaded from mock...',
+        // ... other fields would be populated here
+    };
+}
+
+export const updateWeeklyInsight = (id: string, data: any) => {
+    // Mock update
+    return true;
+}

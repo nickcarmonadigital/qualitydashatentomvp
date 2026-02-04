@@ -36,9 +36,9 @@
 - [x] **Verify Fixes**: Ensure tour is stable and pages load.
 - [x] **Fix "Session Not Found"**: Added hardcoded active session `CS-FIXED-001` to mock data.
 - [x] **Editable Coaching**: Created `/coaching/[id]/edit` and added UI entry point.
-- [ ] **Universal Editability**:
-    - [ ] **Agents**: Create `/agents/[id]/edit` and link from Detail page.
-    - [ ] **Weekly Insights**: Create `/weekly-insight/[id]/edit` (if applicable) or ensure "New" form handles edits.
+- [x] **Universal Editability**:
+    - [x] **Agents**: Create `/agents/[id]/edit` and link from Detail page.
+    - [x] **Weekly Insights**: Create `/weekly-insight/[id]/edit` (if applicable) or ensure "New" form handles edits.
     - [x] **Action Plans**: Verified `/action-plans/[id]/edit` exists.
-    - [ ] **KPI Targets**: Ensure Admin Settings allow editing KPI definitions.
-- [ ] **Verify All**: Validating all edit flows.
+    - [x] **KPI Targets**: Verified Admin Settings allow editing.
+- [x] **Verify All**: Validating all edit flows.

@@ -42,3 +42,13 @@
     - [x] **Action Plans**: Verified `/action-plans/[id]/edit` exists.
     - [x] **KPI Targets**: Verified Admin Settings allow editing.
 - [x] **Verify All**: Validating all edit flows.
+
+## UX Feedback & Enhancements
+- [ ] **Weekly Insights**:
+    - [ ] Add "Submitted Reports" list to main page.
+    - [ ] Add Info/Help tooltips to form sections.
+- [ ] **Action Plans**: Fix "Back to Plans" button in New Action Plan.
+- [ ] **Agents**: Implement "Add New Agent" flow.
+- [ ] **Manager Dashboard**: Make summary cards clickable/expandable.
+- [ ] **LSS Dashboard**: Implement Team filtering on click.
+- [ ] **Coaching Detail**: Wire up "Actions" buttons (Follow-up, etc).

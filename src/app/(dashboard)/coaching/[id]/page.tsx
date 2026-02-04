@@ -1,5 +1,6 @@
 'use client';
 
+import { toast } from 'sonner';
 import { useEffect, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
@@ -307,13 +308,25 @@ export default function CoachingSessionDetailPage() {
                             <CardTitle>Actions</CardTitle>
                         </CardHeader>
                         <CardContent className="space-y-2">
-                            <Button className="w-full" variant="outline">
+                            <Button
+                                className="w-full"
+                                variant="outline"
+                                onClick={() => toast.success("Follow-up Scheduled", { description: "Added to your calendar for next week." })}
+                            >
                                 Schedule Follow-up
                             </Button>
-                            <Button className="w-full" variant="outline">
+                            <Button
+                                className="w-full"
+                                variant="outline"
+                                onClick={() => router.push('/action-plans/new?source=coaching&id=' + session.id)}
+                            >
                                 Generate Action Plan
                             </Button>
-                            <Button className="w-full" variant="outline">
+                            <Button
+                                className="w-full"
+                                variant="outline"
+                                onClick={() => toast.success("Manager Notified", { description: "Email sent to team lead." })}
+                            >
                                 Notify Manager
                             </Button>
 

@@ -82,6 +82,9 @@ export default function AgentDetailPage() {
                                 Audit / Coach
                             </Button>
                         </Link>
+                        <Link href={`/agents/${agent.id}/edit`}>
+                            <Button variant="outline">Edit Profile</Button>
+                        </Link>
                         <Badge variant={agent.status === 'active' ? 'default' : 'secondary'} className="text-lg px-4 py-1">
                             {agent.status.toUpperCase()}
                         </Badge>

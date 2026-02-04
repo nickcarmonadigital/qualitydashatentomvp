@@ -232,6 +232,15 @@ export const getAgentById = (id: string) => {
     };
 }
 
+export const updateAgent = (id: string, updates: Partial<Agent>): Agent | null => {
+    const { agents } = getMockData();
+    const index = agents.findIndex(a => a.id === id);
+    if (index === -1) return null;
+
+    agents[index] = { ...agents[index], ...updates };
+    return agents[index];
+}
+
 export const getInterventionCandidates = () => {
     const { agents, scores } = getMockData();
 

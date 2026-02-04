@@ -18,7 +18,9 @@ export interface Agent {
     role: string;
     team: string;
     tenure_days: number;
-    status: 'active' | 'inactive';
+    tenure_days: number;
+    status: 'active' | 'inactive' | 'on_leave';
+    email?: string;
     metrics: {
         [key: string]: number; // e.g. "QA Score": 85
     };

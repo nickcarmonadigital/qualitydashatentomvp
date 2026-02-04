@@ -27,11 +27,6 @@ import {
     TableHeader,
     TableRow,
 } from '@/components/ui/table';
-import {
-    DialogHeader,
-    DialogTitle,
-    DialogTrigger,
-} from "@/components/ui/dialog";
 import { Users, GraduationCap, Calendar, CheckCircle2, AlertTriangle, Plus, Eye } from 'lucide-react';
 import { getTrainingSessions } from '@/lib/mock-service';
 import { TrainingSession } from '@/types/sessions';
@@ -54,10 +49,6 @@ export default function SessionsPage() {
         setSelectedSession(session);
         setIsDetailOpen(true);
     };
-
-
-
-    // ...
 
     const handleNewSession = (type: 'Calibration' | 'Teach-back') => {
         toast.promise(new Promise(resolve => setTimeout(resolve, 1000)), {

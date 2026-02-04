@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -21,6 +21,7 @@ import { toast } from 'sonner';
 
 export default function NewCoachingSessionPage() {
     const router = useRouter();
+    const searchParams = useSearchParams();
     const [isLoading, setIsLoading] = useState(false);
 
     // Data Sources
@@ -59,7 +60,12 @@ export default function NewCoachingSessionPage() {
     useEffect(() => {
         setAgents(getAgents());
         setKpis(getKPIs());
-    }, []);
+
+        const paramAgentId = searchParams.get('agentId');
+        if (paramAgentId) {
+            setAgentId(paramAgentId);
+        }
+    }, [searchParams]);
 
     const handleAddKpi = () => {
         if (selectedKpiIds.length < 3) {

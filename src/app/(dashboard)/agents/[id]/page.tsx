@@ -76,9 +76,16 @@ export default function AgentDetailPage() {
                             </div>
                         </div>
                     </div>
-                    <Badge variant={agent.status === 'active' ? 'default' : 'secondary'} className="text-lg px-4 py-1">
-                        {agent.status.toUpperCase()}
-                    </Badge>
+                    <div className="flex items-center gap-3">
+                        <Link href={`/coaching/new?agentId=${agent.id}`}>
+                            <Button className="btn-premium">
+                                Audit / Coach
+                            </Button>
+                        </Link>
+                        <Badge variant={agent.status === 'active' ? 'default' : 'secondary'} className="text-lg px-4 py-1">
+                            {agent.status.toUpperCase()}
+                        </Badge>
+                    </div>
                 </div>
             </div>
 

@@ -22,9 +22,12 @@
     5. Action Plans
 - [x] **Integration**: Launch tour from a "Start Guide" button or permanent help menu.
 
-- [ ] **Dashboard Metric**: Add 'Sample Adherence' (Compliance %) card to Dashboard to match the Tour narrative.
-- [ ] **Expand Tour**: Update `OnboardingTour` to cover:
+- [x] **Dashboard Metric**: Add 'Sample Adherence' (Compliance %) card to Dashboard to match the Tour narrative.
+- [x] **Expand Tour**: Update `OnboardingTour` to cover:
     - Weekly Insight (Input)
     - Full LSS Workflow
     - Relationship mappings.
+- [x] **LSS Tab Switching**: Enable deep linking in `lss-tools/page.tsx` (e.g., `?tab=randomizer`) so the tour shows the correct content.
+- [x] **Modular Tours**: Refactor `OnboardingTour` to support section-specific flows (Performance, Coaching, Ops).
+- [x] **Sidebar Tour Buttons**: Add "Play" buttons to Sidebar Group Headers.
 - [ ] **Verify Deployment**: Push execution.

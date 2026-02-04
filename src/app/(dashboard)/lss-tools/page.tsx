@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { useSearchParams } from 'next/navigation';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { CTXTree } from '@/components/lss-tools/CTXTree';
@@ -17,11 +18,19 @@ import Link from 'next/link';
 import { PageGuide } from '@/components/ui/page-guide';
 
 export default function LSSToolsPage() {
+    const searchParams = useSearchParams();
     const [lssData, setLssData] = useState<any>(null);
+    const [activeTab, setActiveTab] = useState('ctx');
 
     useEffect(() => {
         setLssData(getTeamLSSData());
-    }, []);
+
+        // Sync tab with URL
+        const tabParam = searchParams.get('tab');
+        if (tabParam) {
+            setActiveTab(tabParam);
+        }
+    }, [searchParams]);
 
     if (!lssData) {
         return <div className="p-8 text-center">Loading LSS data...</div>;
@@ -88,7 +97,7 @@ export default function LSSToolsPage() {
                 </Card>
             </Link>
 
-            <Tabs defaultValue="ctx" className="space-y-4">
+            <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-4">
                 <TabsList>
                     <TabsTrigger value="ctx" className="flex items-center gap-2">
                         <Network className="h-4 w-4" />

@@ -112,3 +112,22 @@
     - [ ] Walkthrough to verify "TikTok" data flows correctly <!-- id: 66 -->
     - [ ] Verify Tenant Isolation (ensure no data leaks between "Clients") <!-- id: 67 -->
     - [ ] Final UI Polish (Colors, spacing, fonts) <!-- id: 68 -->
+
+## Phase 6: COPC Compliance Upgrade
+- [x] **QA & Training Sessions Module**
+    - [x] Create types (`types/sessions.ts`)
+    - [x] Create `/sessions` page with Calibration & Teach-back views
+    - [x] Add sidebar navigation
+- [x] **Critical Alerts & Anomaly Detection**
+    - [x] Add Audit Source dropdown (Random, NPS Detractor, Escalation)
+    - [x] Add Critical Error checkbox with alert toast
+    - [x] Update `CoachingAudit` interface
+- [x] **Data Integrity (CSV Exports)**
+    - [x] Create `DownloadCSVButton` component
+    - [x] Add export to Coaching Sessions page
+    - [x] Add export to Action Plans page
+- [x] **Settings Page**
+    - [x] Create `/settings` with SLA configuration
+- [x] **Resources Page**
+    - [x] Create `/resources` for SOP hosting
+

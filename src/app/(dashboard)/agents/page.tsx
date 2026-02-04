@@ -29,6 +29,8 @@ import { Label } from '@/components/ui/label';
 import { exportToCSV } from '@/lib/export';
 import { Download } from 'lucide-react';
 
+import { toast } from 'sonner';
+
 const ITEMS_PER_PAGE = 10;
 
 export default function AgentsPage() {
@@ -104,7 +106,9 @@ export default function AgentsPage() {
         <div className="space-y-6">
             <div className="flex items-center justify-between">
                 <h2 className="text-3xl font-bold tracking-tight">Agent Performance</h2>
-                <Button>Add Agent (Mock)</Button>
+                <Button onClick={() => {
+                    toast.info("Mock Feature", { description: "Agent creation is disabled in this demo. Agents are seed data." });
+                }}>Add Agent (Mock)</Button>
             </div>
 
             {/* At Risk Summary Card */}

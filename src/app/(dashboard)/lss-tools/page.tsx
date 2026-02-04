@@ -178,7 +178,12 @@ export default function LSSToolsPage() {
                                     <p className="text-sm text-muted-foreground">Define the problem clearly...</p>
                                 </div>
                                 {/* Placeholder for interactive 5 Whys tool */}
-                                <Button>Start New 5 Whys Session</Button>
+                                <Button onClick={() => {
+                                    const problem = prompt("Enter the problem statement:");
+                                    if (problem) {
+                                        alert(`5 Whys Analysis Started!\n\nProblem: ${problem}\n\nWhy 1: _____\nWhy 2: _____\nWhy 3: _____\nWhy 4: _____\nWhy 5: _____\n\nInteractive 5 Whys builder coming soon!`);
+                                    }
+                                }}>Start New 5 Whys Session</Button>
                             </div>
                         </CardContent>
                     </Card>

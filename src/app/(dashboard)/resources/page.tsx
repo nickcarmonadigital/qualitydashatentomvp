@@ -4,6 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/com
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { FileText, Download, ExternalLink, BookOpen, Scale, Users } from 'lucide-react';
+import { toast } from 'sonner';
 
 const resources = [
     {
@@ -128,7 +129,11 @@ export default function ResourcesPage() {
                         <p className="text-sm text-muted-foreground max-w-md">
                             Drag and drop a PDF here, or click to browse. Documents will be available to all team members.
                         </p>
-                        <Button variant="outline" className="mt-2">
+                        <Button variant="outline" className="mt-2" onClick={() => {
+                            toast.info("Upload Feature Locked", {
+                                description: "Document upload is restricted to Admin users in this demo environment."
+                            });
+                        }}>
                             Browse Files
                         </Button>
                     </div>

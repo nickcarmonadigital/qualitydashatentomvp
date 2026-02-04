@@ -14,13 +14,24 @@ import {
     TableHeader,
     TableRow,
 } from '@/components/ui/table';
-import { Users, GraduationCap, Calendar, CheckCircle2, AlertTriangle, Plus } from 'lucide-react';
+import {
+    Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogFooter,
+    DialogHeader,
+    DialogTitle,
+} from "@/components/ui/dialog";
+import { Users, GraduationCap, Calendar, CheckCircle2, AlertTriangle, Plus, Eye } from 'lucide-react';
 import { getTrainingSessions } from '@/lib/mock-service';
 import { TrainingSession } from '@/types/sessions';
 import { cn } from '@/lib/utils';
+import { toast } from 'sonner';
 
 export default function SessionsPage() {
     const [sessions, setSessions] = useState<TrainingSession[]>([]);
+    const [selectedSession, setSelectedSession] = useState<TrainingSession | null>(null);
+    const [isDetailOpen, setIsDetailOpen] = useState(false);
 
     useEffect(() => {
         setSessions(getTrainingSessions());
@@ -29,6 +40,17 @@ export default function SessionsPage() {
     const calibrations = sessions.filter(s => s.type === 'Calibration');
     const teachBacks = sessions.filter(s => s.type === 'Teach-back');
 
+    const handleViewDetails = (session: TrainingSession) => {
+        setSelectedSession(session);
+        setIsDetailOpen(true);
+    };
+
+    const handleNewSession = () => {
+        toast.info("New Session", {
+            description: "Session creation form coming soon! For now, sessions are auto-generated."
+        });
+    };
+
     return (
         <div className="space-y-6 animate-fade-in">
             <div className="flex items-center justify-between">
@@ -36,7 +58,7 @@ export default function SessionsPage() {
                     <h2 className="text-3xl font-bold tracking-tight">QA & Training Sessions</h2>
                     <p className="text-muted-foreground">Manage Calibrations and Teach-backs to ensure team alignment.</p>
                 </div>
-                <Button className="gap-2">
+                <Button className="gap-2" onClick={handleNewSession}>
                     <Plus className="h-4 w-4" />
                     New Session
                 </Button>
@@ -168,7 +190,10 @@ export default function SessionsPage() {
                                                 )}
                                             </TableCell>
                                             <TableCell className="text-right">
-                                                <Button variant="ghost" size="sm">View Details</Button>
+                                                <Button variant="ghost" size="sm" onClick={() => handleViewDetails(session)}>
+                                                    <Eye className="h-4 w-4 mr-1" />
+                                                    View Details
+                                                </Button>
                                             </TableCell>
                                         </TableRow>
                                     ))}
@@ -219,7 +244,10 @@ export default function SessionsPage() {
                                                 {session.teachBackDetails?.logicWalkthrough}
                                             </TableCell>
                                             <TableCell className="text-right">
-                                                <Button variant="ghost" size="sm">View Notes</Button>
+                                                <Button variant="ghost" size="sm" onClick={() => handleViewDetails(session)}>
+                                                    <Eye className="h-4 w-4 mr-1" />
+                                                    View Notes
+                                                </Button>
                                             </TableCell>
                                         </TableRow>
                                     ))}
@@ -229,6 +257,87 @@ export default function SessionsPage() {
                     </Card>
                 </TabsContent>
             </Tabs>
+
+            {/* Session Detail Dialog */}
+            <Dialog open={isDetailOpen} onOpenChange={setIsDetailOpen}>
+                <DialogContent className="max-w-lg">
+                    <DialogHeader>
+                        <DialogTitle>
+                            {selectedSession?.type === 'Calibration' ? 'Calibration Session Details' : 'Teach-back Session Details'}
+                        </DialogTitle>
+                        <DialogDescription>
+                            Session on {selectedSession?.date} conducted by {selectedSession?.conductor}
+                        </DialogDescription>
+                    </DialogHeader>
+                    <div className="space-y-4">
+                        {selectedSession?.type === 'Calibration' && selectedSession.calibrationResults && (
+                            <>
+                                <div>
+                                    <h4 className="font-semibold text-sm mb-2">Tickets Evaluated</h4>
+                                    <div className="flex gap-2 flex-wrap">
+                                        {selectedSession.calibrationResults.ticketIds.map(t => (
+                                            <Badge key={t} variant="outline" className="font-mono">{t}</Badge>
+                                        ))}
+                                    </div>
+                                </div>
+                                <div>
+                                    <h4 className="font-semibold text-sm mb-2">Team Alignment</h4>
+                                    <p className={cn(
+                                        "text-2xl font-bold",
+                                        selectedSession.calibrationResults.teamAlignmentScore >= 85 ? "text-green-600" : "text-red-600"
+                                    )}>
+                                        {selectedSession.calibrationResults.teamAlignmentScore}%
+                                    </p>
+                                </div>
+                                <div>
+                                    <h4 className="font-semibold text-sm mb-2">Participants</h4>
+                                    <div className="space-y-2">
+                                        {selectedSession.calibrationResults.participants.map((p, i) => (
+                                            <div key={i} className="flex justify-between items-center p-2 bg-slate-50 rounded">
+                                                <span>{p.agentName}</span>
+                                                <Badge variant={p.alignmentScore >= 80 ? "default" : "destructive"}>
+                                                    {p.alignmentScore}%
+                                                </Badge>
+                                            </div>
+                                        ))}
+                                    </div>
+                                </div>
+                            </>
+                        )}
+                        {selectedSession?.type === 'Teach-back' && selectedSession.teachBackDetails && (
+                            <>
+                                <div>
+                                    <h4 className="font-semibold text-sm">Topic</h4>
+                                    <p className="text-lg">{selectedSession.teachBackDetails.topic}</p>
+                                </div>
+                                <div>
+                                    <h4 className="font-semibold text-sm">Speaker</h4>
+                                    <p>{selectedSession.teachBackDetails.speakerName}</p>
+                                </div>
+                                <div>
+                                    <h4 className="font-semibold text-sm">Logic Walkthrough</h4>
+                                    <p className="text-muted-foreground">{selectedSession.teachBackDetails.logicWalkthrough}</p>
+                                </div>
+                                <div>
+                                    <h4 className="font-semibold text-sm">Edge Cases Discussed</h4>
+                                    <p className="text-muted-foreground">{selectedSession.teachBackDetails.edgeCasesDiscussed}</p>
+                                </div>
+                                <div className="flex items-center gap-2">
+                                    <span className="font-semibold text-sm">Why Test Verified:</span>
+                                    {selectedSession.teachBackDetails.whyTestVerified ? (
+                                        <Badge variant="default">Yes</Badge>
+                                    ) : (
+                                        <Badge variant="secondary">No</Badge>
+                                    )}
+                                </div>
+                            </>
+                        )}
+                    </div>
+                    <DialogFooter>
+                        <Button variant="outline" onClick={() => setIsDetailOpen(false)}>Close</Button>
+                    </DialogFooter>
+                </DialogContent>
+            </Dialog>
         </div>
     );
 }

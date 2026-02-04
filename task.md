@@ -22,5 +22,9 @@
     5. Action Plans
 - [x] **Integration**: Launch tour from a "Start Guide" button or permanent help menu.
 
-## Verification
-- [ ] Manual Walkthrough of the Tour.
+- [ ] **Dashboard Metric**: Add 'Sample Adherence' (Compliance %) card to Dashboard to match the Tour narrative.
+- [ ] **Expand Tour**: Update `OnboardingTour` to cover:
+    - Weekly Insight (Input)
+    - Full LSS Workflow
+    - Relationship mappings.
+- [ ] **Verify Deployment**: Push execution.

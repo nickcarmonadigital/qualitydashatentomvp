@@ -15,28 +15,43 @@ const TOUR_STEPS = [
     },
     {
         title: "1. Sample Adherence",
-        content: "The process begins here. We monitor the 'Service Quality Plan' to ensure we are auditing enough sessions (Target: 95%). If the sample is low, the data is invalid.",
+        content: "The process begins here. We monitor the 'Audit Compliance' card (Target: 95%). This ensures we have a statistically significant sample size before drawing conclusions.",
         route: "/dashboard"
     },
     {
-        title: "2. Identify Detractors",
-        content: "Next, we move to Six Sigma Tools. Here we use the Audit Randomizer to target 'NPS Detractors' and use Fishbone diagrams to analyze root causes at a macro level.",
+        title: "2. Input: Weekly Insights",
+        content: "Managers submit qualitative data here. We aggregate KPI movements, new hire performance, and knowledge gaps into a single weekly report.",
+        route: "/weekly-insight/new"
+    },
+    {
+        title: "3. Tool: Audit Randomizer",
+        content: "To generate our sample, we use the LSS Audit Randomizer. This ensures we are targeting the right mix of Random vs Targeted (NPS Detractor) audits.",
         route: "/lss-tools"
     },
     {
-        title: "3. Targeted Analysis",
-        content: "We then identify WHO needs help using the 50/75 Rule. This highlights agents with low performance (Bottom Quartile) vs high potential.",
+        title: "4. Analysis: Fishbone",
+        content: "When KPI trends dip, we use the Fishbone (Ishikawa) diagram to map root causes across People, Process, and Technology.",
+        route: "/lss-tools"
+    },
+    {
+        title: "5. Identification: 50/75 Rule",
+        content: "We then identify WHO needs help. The 50/75 Rule highlights agents in the bottom quartile who are dragging down team performance.",
         route: "/fifty-seventy-five"
     },
     {
-        title: "4. Root Cause Coaching",
-        content: "Once identified, we conduct a Coaching Session. This documents the specific behavior gap and the agreed commitment.",
+        title: "6. Remediation: Coaching",
+        content: "Once identified, we conduct a Coaching Session. This documents the specific behavior gap and the agreed commitment. It creates the 'Paper Trail'.",
         route: "/coaching"
     },
     {
-        title: "5. Action Plans",
-        content: "Finally, for systemic issues, we create an Action Plan. This tracks the 'Meeting Minutes' and ensures long-term process correction.",
+        title: "7. Systemic Fix: Action Plans",
+        content: "For issues affecting the whole team (Process/Policy gaps), we create an Action Plan. This tracks 'Meeting Minutes' and ensures long-term process correction.",
         route: "/action-plans"
+    },
+    {
+        title: "8. Configuration",
+        content: "Finally, Administrators configure the SLAs and Audit Targets here to keep the system aligned with COPC standards.",
+        route: "/admin/settings"
     },
     {
         title: "Cycle Complete",

@@ -19,7 +19,8 @@ import {
   ArrowRight,
   CheckCircle2,
   AlertCircle,
-  Clock
+  Clock,
+  ClipboardCheck
 } from 'lucide-react';
 import { PageGuide } from '@/components/ui/page-guide';
 
@@ -79,7 +80,8 @@ export default function DashboardPage() {
       activePlans,
       criticalAgents,
       completedPlans: plans.filter(p => p.status === 'closed').length,
-      passRate: data[0]?.currentValue || 0
+      passRate: data[0]?.currentValue || 0,
+      auditCompliance: 96.5 // Mocked for demo
     });
   }, []);
 
@@ -160,10 +162,10 @@ export default function DashboardPage() {
         <Card className="metric-card bg-gradient-to-br from-purple-50 to-purple-100/50">
           <CardContent className="p-4">
             <div className="flex items-center gap-3">
-              <Target className="h-8 w-8 text-purple-600" />
+              <ClipboardCheck className="h-8 w-8 text-purple-600" />
               <div>
-                <p className="text-2xl font-bold text-purple-700">{quickStats.totalKPIs}</p>
-                <p className="text-xs text-purple-600/80">KPIs Tracked</p>
+                <p className="text-2xl font-bold text-purple-700">{quickStats.auditCompliance}%</p>
+                <p className="text-xs text-purple-600/80">Audit Compliance</p>
               </div>
             </div>
           </CardContent>

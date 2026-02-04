@@ -17,6 +17,7 @@ import {
     Filter,
     Plus
 } from 'lucide-react';
+import { DownloadCSVButton } from '@/components/ui/download-button';
 
 const getCoachingTypeBadge = (type: string) => {
     const styles: Record<string, { variant: 'default' | 'destructive' | 'secondary' | 'outline', label: string }> = {
@@ -76,11 +77,25 @@ export default function CoachingPage() {
                     <h2 className="text-3xl font-bold tracking-tight text-slate-900">Coaching Sessions</h2>
                     <p className="text-muted-foreground">Track and manage agent coaching activities</p>
                 </div>
-                <Link href="/coaching/new">
-                    <Button className="btn-premium">
-                        <Plus className="h-4 w-4 mr-2" /> New Session
-                    </Button>
-                </Link>
+                <div className="flex gap-2">
+                    <DownloadCSVButton
+                        data={filteredSessions.map(s => ({
+                            Date: s.session_date,
+                            Agent: agents.find(a => a.id === s.agent_id)?.name || s.agent_id,
+                            Coach: s.coach_name,
+                            Type: s.coaching_type,
+                            Outcome: s.outcome,
+                            Status: s.status,
+                            Notes: s.notes
+                        }))}
+                        filename="coaching_sessions"
+                    />
+                    <Link href="/coaching/new">
+                        <Button className="btn-premium">
+                            <Plus className="h-4 w-4 mr-2" /> New Session
+                        </Button>
+                    </Link>
+                </div>
             </div>
 
             {/* Stats Cards */}

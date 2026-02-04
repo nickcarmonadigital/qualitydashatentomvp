@@ -53,6 +53,10 @@ export default function CoachingAuditPage() {
     const [strengths, setStrengths] = useState('');
     const [opportunities, setOpportunities] = useState('');
 
+    // COPC Compliance Fields
+    const [auditSource, setAuditSource] = useState<'random' | 'nps_detractor' | 'escalation'>('random');
+    const [isCriticalError, setIsCriticalError] = useState(false);
+
     useEffect(() => {
         if (params.id) {
             const data = getCoachingSessionById(params.id as string);
@@ -103,10 +107,22 @@ export default function CoachingAuditPage() {
                 },
                 goal_outcome_verified: goalOutcome,
                 strengths,
-                opportunities
+                opportunities,
+                // COPC Compliance
+                audit_source: auditSource,
+                is_critical_error: isCriticalError
             });
 
-            toast.success("Audit submitted successfully");
+            // COPC: Critical Error Alert
+            if (isCriticalError) {
+                toast.error("🚨 CRITICAL ALERT: Supervisor has been notified!", {
+                    duration: 8000,
+                    description: "Zero Tolerance failure flagged. Immediate follow-up required within 24 hours."
+                });
+            } else {
+                toast.success("Audit submitted successfully");
+            }
+
             router.push(`/coaching/${session.id}`);
         } catch (error) {
             console.error(error);
@@ -182,6 +198,48 @@ export default function CoachingAuditPage() {
                         <div className="col-span-full border-t pt-2 mt-1">
                             <span className="text-muted-foreground block text-xs mb-1">Coach's Notes</span>
                             <p className="italic text-slate-600 line-clamp-2">{session.notes}</p>
+                        </div>
+                    </CardContent>
+                </Card>
+
+                {/* COPC: Audit Source & Critical Error */}
+                <Card className="border-orange-200 bg-orange-50/30">
+                    <CardHeader className="pb-3">
+                        <CardTitle className="text-base flex items-center gap-2 text-orange-900">
+                            <AlertCircle className="h-4 w-4 text-orange-500" />
+                            Audit Classification (COPC)
+                        </CardTitle>
+                    </CardHeader>
+                    <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div className="space-y-2">
+                            <Label>Audit Source</Label>
+                            <Select value={auditSource} onValueChange={(v: any) => setAuditSource(v)}>
+                                <SelectTrigger>
+                                    <SelectValue />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    <SelectItem value="random">Random</SelectItem>
+                                    <SelectItem value="nps_detractor">NPS Detractor</SelectItem>
+                                    <SelectItem value="escalation">Client Escalation</SelectItem>
+                                </SelectContent>
+                            </Select>
+                            <p className="text-xs text-muted-foreground">Tag the source for compliance tracking.</p>
+                        </div>
+                        <div className="space-y-2">
+                            <Label>Critical Error (Zero Tolerance)</Label>
+                            <div className="flex items-center gap-3 pt-1">
+                                <input
+                                    type="checkbox"
+                                    id="critical-error"
+                                    checked={isCriticalError}
+                                    onChange={(e) => setIsCriticalError(e.target.checked)}
+                                    className="h-5 w-5 rounded border-gray-300 text-red-600 focus:ring-red-500"
+                                />
+                                <label htmlFor="critical-error" className="text-sm font-medium text-slate-700">
+                                    Flag as Critical Error
+                                </label>
+                            </div>
+                            <p className="text-xs text-muted-foreground">If checked, an alert will be sent to the supervisor.</p>
                         </div>
                     </CardContent>
                 </Card>

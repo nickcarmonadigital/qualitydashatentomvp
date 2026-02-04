@@ -172,6 +172,10 @@ export interface CoachingAudit {
     calculated_score: number; // Weighted score / 100
     strengths: string;
     opportunities: string;
+
+    // COPC Compliance Fields
+    audit_source?: 'random' | 'nps_detractor' | 'escalation';
+    is_critical_error?: boolean;
 }
 
 export interface GoalRow {

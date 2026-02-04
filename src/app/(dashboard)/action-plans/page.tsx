@@ -24,6 +24,7 @@ import {
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Search, ChevronLeft, ChevronRight, FileText, Calendar, UserCircle } from 'lucide-react';
+import { DownloadCSVButton } from '@/components/ui/download-button';
 
 const ITEMS_PER_PAGE = 10;
 
@@ -83,12 +84,26 @@ export default function ActionPlansPage() {
                     <h2 className="text-3xl font-bold tracking-tight">Action Plans</h2>
                     <p className="text-muted-foreground">Manage strategic initiatives and corrective actions.</p>
                 </div>
-                <Button asChild>
-                    <Link href="/action-plans/new">
-                        <FileText className="mr-2 h-4 w-4" />
-                        New Action Plan
-                    </Link>
-                </Button>
+                <div className="flex gap-2">
+                    <DownloadCSVButton
+                        data={filteredPlans.map(p => ({
+                            Title: p.title,
+                            Owner: getOwnerName(p.owner_id),
+                            Status: p.status,
+                            Due_Date: p.due_date,
+                            Problem: p.problem_statement,
+                            Root_Cause: p.root_cause,
+                            Category: p.causal_category
+                        }))}
+                        filename="action_plans"
+                    />
+                    <Button asChild>
+                        <Link href="/action-plans/new">
+                            <FileText className="mr-2 h-4 w-4" />
+                            New Action Plan
+                        </Link>
+                    </Button>
+                </div>
             </div>
 
             <Card>

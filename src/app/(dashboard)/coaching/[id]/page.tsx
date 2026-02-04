@@ -15,7 +15,8 @@ import {
     ClipboardList,
     CheckCircle2,
     AlertCircle,
-    MessageSquare
+    MessageSquare,
+    ShieldCheck
 } from 'lucide-react';
 
 interface SessionDetail extends CoachingSession {
@@ -199,6 +200,28 @@ export default function CoachingSessionDetailPage() {
                             )}
                         </CardContent>
                     </Card>
+
+                    {/* Audit Details (If Exists) */}
+                    {session.audit && (
+                        <Card className="card-gradient border-purple-100 bg-purple-50/10">
+                            <CardHeader>
+                                <CardTitle className="flex items-center gap-2 text-purple-900">
+                                    <ShieldCheck className="h-5 w-5 text-purple-600" />
+                                    Audit Feedback
+                                </CardTitle>
+                            </CardHeader>
+                            <CardContent className="space-y-4">
+                                <div>
+                                    <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-1">Strengths</p>
+                                    <p className="text-sm text-slate-700 bg-white p-2 rounded border border-purple-100">{session.audit.strengths}</p>
+                                </div>
+                                <div>
+                                    <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-1">Opportunities</p>
+                                    <p className="text-sm text-slate-700 bg-white p-2 rounded border border-purple-100">{session.audit.opportunities}</p>
+                                </div>
+                            </CardContent>
+                        </Card>
+                    )}
                 </div>
 
                 {/* Right Column - Status & Outcome */}
@@ -233,6 +256,26 @@ export default function CoachingSessionDetailPage() {
                                     <p className="text-sm text-blue-700">✓ Manager has been notified</p>
                                 </div>
                             )}
+
+                            {/* Audit Status */}
+                            <div className="pt-4 border-t">
+                                <p className="text-sm text-muted-foreground mb-2">Audit Status</p>
+                                {session.audit ? (
+                                    <div className="space-y-2">
+                                        <div className="flex items-center justify-between">
+                                            <span className="text-sm font-medium">Score</span>
+                                            <Badge variant={session.audit.calculated_score >= 90 ? 'default' : session.audit.calculated_score < 60 ? 'destructive' : 'secondary'}>
+                                                {session.audit.calculated_score}/100
+                                            </Badge>
+                                        </div>
+                                        <div className="text-xs text-muted-foreground">
+                                            Audited by {session.audit.auditor_id} on {session.audit.audit_date}
+                                        </div>
+                                    </div>
+                                ) : (
+                                    <p className="text-sm text-muted-foreground italic">Not yet audited</p>
+                                )}
+                            </div>
                         </CardContent>
                     </Card>
 
@@ -251,6 +294,15 @@ export default function CoachingSessionDetailPage() {
                             <Button className="w-full" variant="outline">
                                 Notify Manager
                             </Button>
+
+                            {!session.audit && (
+                                <Link href={`/coaching/${session.id}/audit`} className="w-full">
+                                    <Button className="w-full gap-2 border-purple-200 hover:bg-purple-50 hover:text-purple-700" variant="outline">
+                                        <ShieldCheck className="h-4 w-4" />
+                                        Audit this Session
+                                    </Button>
+                                </Link>
+                            )}
                         </CardContent>
                     </Card>
                 </div>

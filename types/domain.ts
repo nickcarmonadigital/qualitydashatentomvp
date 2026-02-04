@@ -130,5 +130,44 @@ export interface CoachingSession {
     manager_notified: boolean;
 
     status: 'scheduled' | 'completed' | 'follow_up_required' | 'auto_generated';
+
+    // Optional audit attached to this session
+    audit?: CoachingAudit;
+}
+
+export interface CoachingAudit {
+    id: string;
+    session_id: string;
+    auditor_id: string;
+    audit_date: string;
+
+    // SOP Trilevel Model Scores (1-5)
+    sections: {
+        trust_connection: {
+            welcoming_tone: number;
+            rapport_building: number;
+            empathy: number;
+            review_previous: number;
+        };
+        coaching_execution: {
+            agent_involvement: number;
+            probing_questions: number;
+            root_cause_id: number;
+            solution_relevance: number;
+            objection_handling: number;
+            skill_transfer: number;
+        };
+        follow_up: {
+            expectations_set: number;
+            smart_goal_quality: number; // Specific, Tracked, Time-bound
+            documentation: number;
+        };
+    };
+
+    goal_outcome_verified: 'achieved' | 'missed' | 'in_progress' | 'not_started';
+
+    calculated_score: number; // Weighted score / 100
+    strengths: string;
+    opportunities: string;
 }
 

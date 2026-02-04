@@ -1,4 +1,4 @@
-import { Agent, KPI, Score, ActionPlan, CoachingSession } from '@/types/domain';
+import { Agent, KPI, Score, ActionPlan, CoachingSession, CoachingAudit } from '@/types/domain';
 import { generateAgents, generateKPIs, generateScores, generateActionPlans, generateCoachingSessions } from '@/script/seed_data';
 
 // Singleton-ish pattern to keeping data consistent for the User Session (Mock)
@@ -7,6 +7,7 @@ let cachedKPIs: KPI[] = [];
 let cachedScores: Score[] = [];
 let cachedActionPlans: ActionPlan[] = [];
 let cachedCoachingSessions: CoachingSession[] = [];
+let cachedCoachingAudits: CoachingAudit[] = [];
 
 export const getMockData = () => {
     if (cachedAgents.length === 0) {
@@ -211,9 +212,12 @@ export const getCoachingSessionById = (id: string) => {
     if (!session) return null;
 
     const agent = agents.find(a => a.id === session.agent_id);
+    const audit = cachedCoachingAudits.find(a => a.session_id === id);
+
     return {
         ...session,
-        agentName: agent?.name || 'Unknown'
+        agentName: agent?.name || 'Unknown',
+        audit
     };
 }
 
@@ -381,4 +385,65 @@ export const getTeamLSSData = () => {
         histogramData,
         boxPlotData
     };
+}
+
+export const createCoachingAudit = (auditData: Omit<CoachingAudit, 'id' | 'calculated_score' | 'audit_date'>): CoachingAudit => {
+    // 1. Calculate Score based on SOP Weights
+    // Formula: (Rating / 5) * Weight
+
+    // Weights from SOP
+    const weights = {
+        trust: {
+            welcoming_tone: 5,
+            rapport_building: 5,
+            empathy: 7,
+            review_previous: 8
+        },
+        execution: {
+            agent_involvement: 5,
+            probing_questions: 10,
+            root_cause_id: 10,
+            solution_relevance: 10,
+            objection_handling: 7,
+            skill_transfer: 8
+        },
+        followWidth: {
+            expectations_set: 10,
+            smart_goal_quality: 10,
+            documentation: 5
+        }
+    };
+
+    const s = auditData.sections;
+
+    let totalScore = 0;
+
+    // Trust (25 max)
+    totalScore += (s.trust_connection.welcoming_tone / 5) * weights.trust.welcoming_tone;
+    totalScore += (s.trust_connection.rapport_building / 5) * weights.trust.rapport_building;
+    totalScore += (s.trust_connection.empathy / 5) * weights.trust.empathy;
+    totalScore += (s.trust_connection.review_previous / 5) * weights.trust.review_previous;
+
+    // Execution (50 max)
+    totalScore += (s.coaching_execution.agent_involvement / 5) * weights.execution.agent_involvement;
+    totalScore += (s.coaching_execution.probing_questions / 5) * weights.execution.probing_questions;
+    totalScore += (s.coaching_execution.root_cause_id / 5) * weights.execution.root_cause_id;
+    totalScore += (s.coaching_execution.solution_relevance / 5) * weights.execution.solution_relevance;
+    totalScore += (s.coaching_execution.objection_handling / 5) * weights.execution.objection_handling;
+    totalScore += (s.coaching_execution.skill_transfer / 5) * weights.execution.skill_transfer;
+
+    // Follow-up (25 max)
+    totalScore += (s.follow_up.expectations_set / 5) * weights.followWidth.expectations_set;
+    totalScore += (s.follow_up.smart_goal_quality / 5) * weights.followWidth.smart_goal_quality;
+    totalScore += (s.follow_up.documentation / 5) * weights.followWidth.documentation;
+
+    const newAudit: CoachingAudit = {
+        ...auditData,
+        id: `audit-${Date.now()}`,
+        audit_date: new Date().toISOString().split('T')[0],
+        calculated_score: Math.round(totalScore)
+    };
+
+    cachedCoachingAudits.push(newAudit);
+    return newAudit;
 }

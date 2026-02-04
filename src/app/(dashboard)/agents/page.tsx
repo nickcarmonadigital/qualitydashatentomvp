@@ -103,198 +103,307 @@ export default function AgentsPage() {
         exportToCSV(data, 'agents_export');
     };
 
-    return (
-        <div className="space-y-6">
-            <div className="flex items-center justify-between">
-                <div>
-                    <h2 className="text-3xl font-bold tracking-tight flex items-center gap-2">
-                        Agent Performance
-                        <PageGuide
-                            title="Agent Roster"
-                            description="Complete directory of your team. Drill down for detailed performance history and coaching logs."
-                            items={['Performance Tiers', 'Risk Calculations', 'Direct Coaching Access']}
-                        />
-                    </h2>
-                    <p className="text-muted-foreground">Manage your team and monitor individual progress.</p>
-                </div>
-                <Button onClick={() => {
-                    toast.info("Mock Feature", { description: "Agent creation is disabled in this demo. Agents are seed data." });
-                }}>Add Agent (Mock)</Button>
-            </div>
+    import {
+        Dialog,
+        DialogContent,
+        DialogDescription,
+        DialogFooter,
+        DialogHeader,
+        DialogTitle,
+        DialogTrigger,
+    } from "@/components/ui/dialog";
+    import { createAgent } from '@/lib/mock-service';
 
-            {/* At Risk Summary Card */}
-            {atRiskCount > 0 && (
-                <div className="bg-red-50 border border-red-200 rounded-lg p-4 flex items-center justify-between">
-                    <div className="flex items-center gap-4">
-                        <div className="p-3 bg-red-100 rounded-full">
-                            <AlertOctagon className="h-6 w-6 text-red-600" />
-                        </div>
-                        <div>
-                            <h3 className="text-lg font-bold text-red-900">Intervention Needed</h3>
-                            <p className="text-red-700">There are {atRiskCount} agents falling below the 80% performance threshold.</p>
-                        </div>
+    // ... other imports
+
+    export default function AgentsPage() {
+        const [agents, setAgents] = useState<Agent[]>([]);
+        // ... other state
+
+        // New Agent Form State
+        const [isAddAgentOpen, setIsAddAgentOpen] = useState(false);
+        const [newAgent, setNewAgent] = useState({ name: '', role: 'Agent', team: 'Team Alpha', email: '' });
+
+        const handleAddAgent = () => {
+            if (!newAgent.name || !newAgent.email) {
+                toast.error("Missing Fields", { description: "Please enter a name and email." });
+                return;
+            }
+
+            const created = createAgent({
+                name: newAgent.name,
+                role: newAgent.role as any,
+                team: newAgent.team,
+                email: newAgent.email,
+                status: 'active'
+            });
+
+            setAgents(prev => [...prev, created]);
+            toast.success("Agent Created", { description: `${created.name} has been added to the roster.` });
+            setIsAddAgentOpen(false);
+            setNewAgent({ name: '', role: 'Agent', team: 'Team Alpha', email: '' });
+        };
+
+        // ... useEffects
+
+        return (
+            <div className="space-y-6">
+                <div className="flex items-center justify-between">
+                    <div>
+                        <h2 className="text-3xl font-bold tracking-tight flex items-center gap-2">
+                            Agent Performance
+                            <PageGuide
+                                title="Agent Roster"
+                                description="Complete directory of your team. Drill down for detailed performance history and coaching logs."
+                                items={['Performance Tiers', 'Risk Calculations', 'Direct Coaching Access']}
+                            />
+                        </h2>
+                        <p className="text-muted-foreground">Manage your team and monitor individual progress.</p>
                     </div>
-                    <Button
-                        variant={showOnlyAtRisk ? "secondary" : "destructive"}
-                        onClick={() => setShowOnlyAtRisk(!showOnlyAtRisk)}
-                    >
-                        {showOnlyAtRisk ? "Show All Agents" : "View At-Risk Only"}
-                    </Button>
-                </div>
-            )}
 
-            <Card>
-                <CardHeader>
-                    <CardTitle>Agent Directory</CardTitle>
-                    <CardDescription>View performance metrics, tenure, and status for all agents.</CardDescription>
-                </CardHeader>
-                <CardContent>
-                    <div className="flex flex-col md:flex-row gap-4 mb-6 justify-between items-end">
-                        <div className="flex gap-2 w-full md:w-auto">
-                            <div className="relative w-full">
-                                <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
-                                <Input
-                                    placeholder="Search by name or team..."
-                                    className="pl-8"
-                                    value={search}
-                                    onChange={(e) => setSearch(e.target.value)}
-                                />
-                            </div>
-                        </div>
-                        <div className="flex gap-2 w-full md:w-auto items-center">
-                            <Button variant="outline" size="sm" onClick={handleExport}>
-                                <Download className="h-4 w-4 mr-2" />
-                                Export CSV
+                    <Dialog open={isAddAgentOpen} onOpenChange={setIsAddAgentOpen}>
+                        <DialogTrigger asChild>
+                            <Button>
+                                <User className="mr-2 h-4 w-4" />
+                                Add Agent
                             </Button>
-
-                            <div className="flex items-center space-x-2 mr-4">
-                                <Switch
-                                    id="risk-mode"
-                                    checked={showOnlyAtRisk}
-                                    onCheckedChange={setShowOnlyAtRisk}
-                                />
-                                <Label htmlFor="risk-mode">At Risk Only</Label>
+                        </DialogTrigger>
+                        <DialogContent>
+                            <DialogHeader>
+                                <DialogTitle>Add New Agent</DialogTitle>
+                                <DialogDescription>Create a new profile for a team member.</DialogDescription>
+                            </DialogHeader>
+                            <div className="space-y-4 py-4">
+                                <div className="space-y-2">
+                                    <Label>Full Name</Label>
+                                    <Input
+                                        placeholder="e.g. John Doe"
+                                        value={newAgent.name}
+                                        onChange={(e) => setNewAgent({ ...newAgent, name: e.target.value })}
+                                    />
+                                </div>
+                                <div className="space-y-2">
+                                    <Label>Email</Label>
+                                    <Input
+                                        placeholder="john.doe@company.com"
+                                        type="email"
+                                        value={newAgent.email}
+                                        onChange={(e) => setNewAgent({ ...newAgent, email: e.target.value })}
+                                    />
+                                </div>
+                                <div className="grid grid-cols-2 gap-4">
+                                    <div className="space-y-2">
+                                        <Label>Role</Label>
+                                        <Select
+                                            value={newAgent.role}
+                                            onValueChange={(val) => setNewAgent({ ...newAgent, role: val })}
+                                        >
+                                            <SelectTrigger><SelectValue /></SelectTrigger>
+                                            <SelectContent>
+                                                <SelectItem value="Agent">Agent</SelectItem>
+                                                <SelectItem value="Team Lead">Team Lead</SelectItem>
+                                                <SelectItem value="QA Specialist">QA Specialist</SelectItem>
+                                            </SelectContent>
+                                        </Select>
+                                    </div>
+                                    <div className="space-y-2">
+                                        <Label>Team</Label>
+                                        <Select
+                                            value={newAgent.team}
+                                            onValueChange={(val) => setNewAgent({ ...newAgent, team: val })}
+                                        >
+                                            <SelectTrigger><SelectValue /></SelectTrigger>
+                                            <SelectContent>
+                                                <SelectItem value="Team Alpha">Team Alpha</SelectItem>
+                                                <SelectItem value="Team Beta">Team Beta</SelectItem>
+                                                <SelectItem value="Team Gamma">Team Gamma</SelectItem>
+                                            </SelectContent>
+                                        </Select>
+                                    </div>
+                                </div>
                             </div>
+                            <DialogFooter>
+                                <Button variant="outline" onClick={() => setIsAddAgentOpen(false)}>Cancel</Button>
+                                <Button onClick={handleAddAgent}>Create Profile</Button>
+                            </DialogFooter>
+                        </DialogContent>
+                    </Dialog>
+                </div>
 
-                            <Select value={roleFilter} onValueChange={setRoleFilter}>
-                                <SelectTrigger className="w-[150px]">
-                                    <SelectValue placeholder="Role" />
-                                </SelectTrigger>
-                                <SelectContent>
-                                    <SelectItem value="all">All Roles</SelectItem>
-                                    <SelectItem value="Agent">Agent</SelectItem>
-                                    <SelectItem value="Team Lead">Team Lead</SelectItem>
-                                    <SelectItem value="QA Specialist">QA Specialist</SelectItem>
-                                </SelectContent>
-                            </Select>
-
-                            <Select value={statusFilter} onValueChange={setStatusFilter}>
-                                <SelectTrigger className="w-[150px]">
-                                    <SelectValue placeholder="Status" />
-                                </SelectTrigger>
-                                <SelectContent>
-                                    <SelectItem value="all">All Status</SelectItem>
-                                    <SelectItem value="active">Active</SelectItem>
-                                    <SelectItem value="inactive">Inactive</SelectItem>
-                                </SelectContent>
-                            </Select>
+                {/* At Risk Summary Card */}
+                {atRiskCount > 0 && (
+                    <div className="bg-red-50 border border-red-200 rounded-lg p-4 flex items-center justify-between">
+                        <div className="flex items-center gap-4">
+                            <div className="p-3 bg-red-100 rounded-full">
+                                <AlertOctagon className="h-6 w-6 text-red-600" />
+                            </div>
+                            <div>
+                                <h3 className="text-lg font-bold text-red-900">Intervention Needed</h3>
+                                <p className="text-red-700">There are {atRiskCount} agents falling below the 80% performance threshold.</p>
+                            </div>
                         </div>
+                        <Button
+                            variant={showOnlyAtRisk ? "secondary" : "destructive"}
+                            onClick={() => setShowOnlyAtRisk(!showOnlyAtRisk)}
+                        >
+                            {showOnlyAtRisk ? "Show All Agents" : "View At-Risk Only"}
+                        </Button>
                     </div>
+                )}
 
-                    <div className="rounded-md border">
-                        <Table>
-                            <TableHeader>
-                                <TableRow>
-                                    <TableHead>Name</TableHead>
-                                    <TableHead>Role</TableHead>
-                                    <TableHead>Team</TableHead>
-                                    <TableHead>Avg Score</TableHead>
-                                    <TableHead>Status</TableHead>
-                                    <TableHead className="text-right">Actions</TableHead>
-                                </TableRow>
-                            </TableHeader>
-                            <TableBody>
-                                {paginatedAgents.length === 0 ? (
+                <Card>
+                    <CardHeader>
+                        <CardTitle>Agent Directory</CardTitle>
+                        <CardDescription>View performance metrics, tenure, and status for all agents.</CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                        <div className="flex flex-col md:flex-row gap-4 mb-6 justify-between items-end">
+                            <div className="flex gap-2 w-full md:w-auto">
+                                <div className="relative w-full">
+                                    <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+                                    <Input
+                                        placeholder="Search by name or team..."
+                                        className="pl-8"
+                                        value={search}
+                                        onChange={(e) => setSearch(e.target.value)}
+                                    />
+                                </div>
+                            </div>
+                            <div className="flex gap-2 w-full md:w-auto items-center">
+                                <Button variant="outline" size="sm" onClick={handleExport}>
+                                    <Download className="h-4 w-4 mr-2" />
+                                    Export CSV
+                                </Button>
+
+                                <div className="flex items-center space-x-2 mr-4">
+                                    <Switch
+                                        id="risk-mode"
+                                        checked={showOnlyAtRisk}
+                                        onCheckedChange={setShowOnlyAtRisk}
+                                    />
+                                    <Label htmlFor="risk-mode">At Risk Only</Label>
+                                </div>
+
+                                <Select value={roleFilter} onValueChange={setRoleFilter}>
+                                    <SelectTrigger className="w-[150px]">
+                                        <SelectValue placeholder="Role" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        <SelectItem value="all">All Roles</SelectItem>
+                                        <SelectItem value="Agent">Agent</SelectItem>
+                                        <SelectItem value="Team Lead">Team Lead</SelectItem>
+                                        <SelectItem value="QA Specialist">QA Specialist</SelectItem>
+                                    </SelectContent>
+                                </Select>
+
+                                <Select value={statusFilter} onValueChange={setStatusFilter}>
+                                    <SelectTrigger className="w-[150px]">
+                                        <SelectValue placeholder="Status" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        <SelectItem value="all">All Status</SelectItem>
+                                        <SelectItem value="active">Active</SelectItem>
+                                        <SelectItem value="inactive">Inactive</SelectItem>
+                                    </SelectContent>
+                                </Select>
+                            </div>
+                        </div>
+
+                        <div className="rounded-md border">
+                            <Table>
+                                <TableHeader>
                                     <TableRow>
-                                        <TableCell colSpan={6} className="h-24 text-center">
-                                            No agents found.
-                                        </TableCell>
+                                        <TableHead>Name</TableHead>
+                                        <TableHead>Role</TableHead>
+                                        <TableHead>Team</TableHead>
+                                        <TableHead>Avg Score</TableHead>
+                                        <TableHead>Status</TableHead>
+                                        <TableHead className="text-right">Actions</TableHead>
                                     </TableRow>
-                                ) : (
-                                    paginatedAgents.map((agent) => {
-                                        const riskInfo = interventionCandidates.find(c => c.agent.id === agent.id);
-                                        const isRisk = !!riskInfo;
+                                </TableHeader>
+                                <TableBody>
+                                    {paginatedAgents.length === 0 ? (
+                                        <TableRow>
+                                            <TableCell colSpan={6} className="h-24 text-center">
+                                                No agents found.
+                                            </TableCell>
+                                        </TableRow>
+                                    ) : (
+                                        paginatedAgents.map((agent) => {
+                                            const riskInfo = interventionCandidates.find(c => c.agent.id === agent.id);
+                                            const isRisk = !!riskInfo;
 
-                                        return (
-                                            <TableRow key={agent.id} className={isRisk ? "bg-red-50 hover:bg-red-100" : ""}>
-                                                <TableCell className="font-medium flex items-center gap-2">
-                                                    <div className={`h-8 w-8 rounded-full flex items-center justify-center ${isRisk ? 'bg-red-200' : 'bg-slate-100'}`}>
-                                                        <User className={`h-4 w-4 ${isRisk ? 'text-red-700' : 'text-slate-500'}`} />
-                                                    </div>
-                                                    <div>
-                                                        {agent.name}
-                                                        {isRisk && <span className="block text-[10px] text-red-600 font-bold">INTERVENTION NEEDED</span>}
-                                                    </div>
-                                                </TableCell>
-                                                <TableCell>{agent.role}</TableCell>
-                                                <TableCell>{agent.team}</TableCell>
-                                                <TableCell>
-                                                    {riskInfo ? (
-                                                        <div className="flex items-center text-red-600 font-bold">
-                                                            <TrendingDown className="h-4 w-4 mr-1" />
-                                                            {riskInfo.averageScore}%
+                                            return (
+                                                <TableRow key={agent.id} className={isRisk ? "bg-red-50 hover:bg-red-100" : ""}>
+                                                    <TableCell className="font-medium flex items-center gap-2">
+                                                        <div className={`h-8 w-8 rounded-full flex items-center justify-center ${isRisk ? 'bg-red-200' : 'bg-slate-100'}`}>
+                                                            <User className={`h-4 w-4 ${isRisk ? 'text-red-700' : 'text-slate-500'}`} />
                                                         </div>
-                                                    ) : (
-                                                        <span className="text-green-600 font-medium">Good</span>
-                                                    )}
-                                                </TableCell>
-                                                <TableCell>
-                                                    <Badge variant={agent.status === 'active' ? 'default' : 'secondary'}>
-                                                        {agent.status}
-                                                    </Badge>
-                                                </TableCell>
-                                                <TableCell className="text-right">
-                                                    <Button variant="ghost" size="sm" asChild>
-                                                        <Link href={`/agents/${agent.id}`}>
-                                                            View
-                                                        </Link>
-                                                    </Button>
-                                                </TableCell>
-                                            </TableRow>
-                                        )
-                                    })
-                                )}
-                            </TableBody>
-                        </Table>
-                    </div>
+                                                        <div>
+                                                            {agent.name}
+                                                            {isRisk && <span className="block text-[10px] text-red-600 font-bold">INTERVENTION NEEDED</span>}
+                                                        </div>
+                                                    </TableCell>
+                                                    <TableCell>{agent.role}</TableCell>
+                                                    <TableCell>{agent.team}</TableCell>
+                                                    <TableCell>
+                                                        {riskInfo ? (
+                                                            <div className="flex items-center text-red-600 font-bold">
+                                                                <TrendingDown className="h-4 w-4 mr-1" />
+                                                                {riskInfo.averageScore}%
+                                                            </div>
+                                                        ) : (
+                                                            <span className="text-green-600 font-medium">Good</span>
+                                                        )}
+                                                    </TableCell>
+                                                    <TableCell>
+                                                        <Badge variant={agent.status === 'active' ? 'default' : 'secondary'}>
+                                                            {agent.status}
+                                                        </Badge>
+                                                    </TableCell>
+                                                    <TableCell className="text-right">
+                                                        <Button variant="ghost" size="sm" asChild>
+                                                            <Link href={`/agents/${agent.id}`}>
+                                                                View
+                                                            </Link>
+                                                        </Button>
+                                                    </TableCell>
+                                                </TableRow>
+                                            )
+                                        })
+                                    )}
+                                </TableBody>
+                            </Table>
+                        </div>
 
-                    <div className="flex items-center justify-end space-x-2 py-4">
-                        <div className="flex-1 text-sm text-muted-foreground">
-                            Showing {startIndex + 1} to {Math.min(startIndex + ITEMS_PER_PAGE, filteredAgents.length)} of {filteredAgents.length} agents
+                        <div className="flex items-center justify-end space-x-2 py-4">
+                            <div className="flex-1 text-sm text-muted-foreground">
+                                Showing {startIndex + 1} to {Math.min(startIndex + ITEMS_PER_PAGE, filteredAgents.length)} of {filteredAgents.length} agents
+                            </div>
+                            <div className="space-x-2">
+                                <Button
+                                    variant="outline"
+                                    size="sm"
+                                    onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
+                                    disabled={currentPage === 1}
+                                >
+                                    <ChevronLeft className="h-4 w-4" />
+                                    Previous
+                                </Button>
+                                <Button
+                                    variant="outline"
+                                    size="sm"
+                                    onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
+                                    disabled={currentPage === totalPages}
+                                >
+                                    Next
+                                    <ChevronRight className="h-4 w-4" />
+                                </Button>
+                            </div>
                         </div>
-                        <div className="space-x-2">
-                            <Button
-                                variant="outline"
-                                size="sm"
-                                onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
-                                disabled={currentPage === 1}
-                            >
-                                <ChevronLeft className="h-4 w-4" />
-                                Previous
-                            </Button>
-                            <Button
-                                variant="outline"
-                                size="sm"
-                                onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
-                                disabled={currentPage === totalPages}
-                            >
-                                Next
-                                <ChevronRight className="h-4 w-4" />
-                            </Button>
-                        </div>
-                    </div>
-                </CardContent>
-            </Card>
-        </div>
+                    </CardContent>
+                </Card>
+            </div>
+        </div >
     );
-}
+    }

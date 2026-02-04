@@ -21,16 +21,17 @@ export default function LSSToolsPage() {
     const searchParams = useSearchParams();
     const [lssData, setLssData] = useState<any>(null);
     const [activeTab, setActiveTab] = useState('ctx');
+    const [selectedTeam, setSelectedTeam] = useState<string | null>(null);
 
     useEffect(() => {
-        setLssData(getTeamLSSData());
+        setLssData(getTeamLSSData(selectedTeam));
 
         // Sync tab with URL
         const tabParam = searchParams.get('tab');
         if (tabParam) {
             setActiveTab(tabParam);
         }
-    }, [searchParams]);
+    }, [searchParams, selectedTeam]);
 
     if (!lssData) {
         return <div className="p-8 text-center">Loading LSS data...</div>;
@@ -50,16 +51,26 @@ export default function LSSToolsPage() {
                     </h2>
                     <p className="text-muted-foreground">Standardized problem solving templates</p>
                 </div>
+                {selectedTeam && (
+                    <Button variant="ghost" onClick={() => setSelectedTeam(null)} className="text-muted-foreground hover:text-primary">
+                        Clear Team Filter ({selectedTeam})
+                    </Button>
+                )}
             </div>
 
             {/* Team Stats Summary */}
             <div className="grid gap-4 md:grid-cols-4">
                 {lssData.teamStats?.map((team: any) => (
-                    <Card key={team.team}>
+                    <Card
+                        key={team.team}
+                        className={`cursor-pointer transition-all hover:shadow-md ${selectedTeam === team.team ? 'ml-0 border-primary bg-primary/5 shadow-md' : 'hover:bg-slate-50'}`}
+                        onClick={() => setSelectedTeam(selectedTeam === team.team ? null : team.team)}
+                    >
                         <CardHeader className="pb-2">
                             <CardTitle className="text-sm font-medium flex items-center gap-2">
-                                <Users className="h-4 w-4" />
+                                <Users className={`h-4 w-4 ${selectedTeam === team.team ? 'text-primary' : 'text-slate-500'}`} />
                                 {team.team}
+                                {selectedTeam === team.team && <Badge variant="default" className="ml-auto text-xs py-0 h-5">Selected</Badge>}
                             </CardTitle>
                         </CardHeader>
                         <CardContent>
@@ -73,29 +84,15 @@ export default function LSSToolsPage() {
             </div>
 
             {/* Audit Randomizer Link Card */}
-            <Link href="/lss-tools/audit-randomizer" className="block">
-                <Card className="border-2 border-blue-500 hover:bg-blue-50 transition-colors cursor-pointer">
-                    <CardHeader>
-                        <div className="flex items-center justify-between">
-                            <div className="flex items-center gap-3">
-                                <div className="p-2 bg-blue-100 rounded-lg">
-                                    <Shuffle className="h-6 w-6 text-blue-600" />
-                                </div>
-                                <div>
-                                    <CardTitle className="flex items-center gap-2">
-                                        Audit Randomizer
-                                        <Badge variant="secondary" className="text-xs">DEMO</Badge>
-                                    </CardTitle>
-                                    <CardDescription>
-                                        Random ticket/call selector for quality audits (Enterprise feature)
-                                    </CardDescription>
-                                </div>
-                            </div>
-                            <ArrowRight className="h-5 w-5 text-muted-foreground" />
-                        </div>
-                    </CardHeader>
-                </Card>
-            </Link>
+            <div className="flex items-center justify-end">
+                <Link href="/lss-tools/audit-randomizer" className="inline-block">
+                    <Button variant="outline" className="gap-2 border-blue-200 bg-blue-50 text-blue-700 hover:bg-blue-100 hover:text-blue-800">
+                        <Shuffle className="h-4 w-4" />
+                        Launch Audit Randomizer
+                        <div className="ml-2 bg-blue-200 text-blue-800 text-[10px] px-1.5 py-0.5 rounded-full font-bold">DEMO</div>
+                    </Button>
+                </Link>
+            </div>
 
             <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-4">
                 <TabsList>

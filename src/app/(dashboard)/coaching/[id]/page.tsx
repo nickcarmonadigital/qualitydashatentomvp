@@ -7,7 +7,7 @@ import Link from 'next/link';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { getCoachingSessionById } from '@/lib/mock-service';
+import { getCoachingSessionById, updateCoachingSession } from '@/lib/mock-service';
 import { CoachingSession } from '@/types/domain';
 import {
     ArrowLeft,
@@ -311,7 +311,19 @@ export default function CoachingSessionDetailPage() {
                             <Button
                                 className="w-full"
                                 variant="outline"
-                                onClick={() => toast.success("Follow-up Scheduled", { description: "Added to your calendar for next week." })}
+                                onClick={() => {
+                                    const nextWeek = new Date();
+                                    nextWeek.setDate(nextWeek.getDate() + 7);
+                                    const dateStr = nextWeek.toISOString().split('T')[0];
+
+                                    updateCoachingSession(session.id, {
+                                        status: 'follow_up_required',
+                                        follow_up_date: dateStr
+                                    });
+
+                                    setSession(prev => prev ? ({ ...prev, status: 'follow_up_required', follow_up_date: dateStr }) : null);
+                                    toast.success("Follow-up Scheduled", { description: `Added to your calendar for ${dateStr}.` });
+                                }}
                             >
                                 Schedule Follow-up
                             </Button>
@@ -325,9 +337,14 @@ export default function CoachingSessionDetailPage() {
                             <Button
                                 className="w-full"
                                 variant="outline"
-                                onClick={() => toast.success("Manager Notified", { description: "Email sent to team lead." })}
+                                onClick={() => {
+                                    updateCoachingSession(session.id, { manager_notified: true });
+                                    setSession(prev => prev ? ({ ...prev, manager_notified: true }) : null);
+                                    toast.success("Manager Notified", { description: "Email sent to team lead." });
+                                }}
+                                disabled={session.manager_notified}
                             >
-                                Notify Manager
+                                {session.manager_notified ? 'Manager Notified' : 'Notify Manager'}
                             </Button>
 
                             {!session.audit && (

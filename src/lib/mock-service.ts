@@ -379,21 +379,56 @@ export const getActionPlanById = (id: string) => {
     };
 }
 
+// ... existing imports
+
+export const createAgent = (agentData: Omit<Agent, 'id' | 'tenure_days' | 'metrics' | 'avatar'>): Agent => {
+    const { agents } = getMockData();
+    const newAgent: Agent = {
+        ...agentData,
+        id: `agent-new-${Date.now()}`,
+        tenure_days: 1, // New agent
+        avatar: '/avatars/01.png', // Default
+        metrics: {
+            quality_score: 100, // Start high
+            aht: 300,
+            attendance: 100,
+            sentiment_score: 8.5
+        }
+    };
+    agents.push(newAgent);
+    cachedAgents = agents; // Update cache
+    return newAgent;
+};
+
+// ... existing functions
+
 // LSS Tools Team-Based Data
-export const getTeamLSSData = () => {
+export const getTeamLSSData = (teamFilter?: string | null) => {
     const { agents, scores, kpis, coachingSessions } = getMockData();
+
+    // Application Layer Filtering
+    const filteredAgents = teamFilter
+        ? agents.filter(a => a.team === teamFilter)
+        : agents;
+
+    const filteredAgentIds = filteredAgents.map(a => a.id);
 
     // Get KPIs by name
     const ahtKpi = kpis.find(k => k.name.toLowerCase().includes('aht'));
     const csatKpi = kpis.find(k => k.name.toLowerCase().includes('csat'));
     const qualityKpi = kpis.find(k => k.name.toLowerCase().includes('quality'));
 
-    // Get unique teams
+    // Get unique teams (always return all teams for the selector/cards, or just filtered? 
+    // Usually standard to keep comparisons available, but user asked for "only that team's stats")
+    // We'll keep the team list for the top cards but filter the charts.
     const teams = [...new Set(agents.map(a => a.team))];
 
     // ======== Pareto Data (Coaching Issues by Type) ========
+    // Filter sessions to only those for the filtered agents
+    const filteredSessions = coachingSessions.filter(s => filteredAgentIds.includes(s.agent_id));
+
     const coachingTypeCounts: Record<string, number> = {};
-    coachingSessions.forEach(s => {
+    filteredSessions.forEach(s => {
         const type = s.coaching_type || 'unknown';
         coachingTypeCounts[type] = (coachingTypeCounts[type] || 0) + 1;
     });
@@ -406,7 +441,7 @@ export const getTeamLSSData = () => {
 
     // ======== Scatter Data (AHT vs CSAT per agent) ========
     const scatterData: { x: number; y: number; agent: string; team: string }[] = [];
-    agents.forEach(agent => {
+    filteredAgents.forEach(agent => {
         const agentScores = scores.filter(s => s.agent_id === agent.id);
         const ahtScores = ahtKpi ? agentScores.filter(s => s.kpi_id === ahtKpi.id) : [];
         const csatScores = csatKpi ? agentScores.filter(s => s.kpi_id === csatKpi.id) : [];
@@ -428,33 +463,41 @@ export const getTeamLSSData = () => {
         }
     });
 
-    // ======== Histogram Data (All QA scores) ========
+    // ======== Histogram Data (All QA scores for filtered agents) ========
     const histogramData: number[] = [];
     if (qualityKpi) {
         scores
-            .filter(s => s.kpi_id === qualityKpi.id)
+            .filter(s => s.kpi_id === qualityKpi.id && filteredAgentIds.includes(s.agent_id))
             .forEach(s => histogramData.push(s.value));
     }
 
     // ======== BoxPlot Data (QA scores by team) ========
+    // If filtered, we might only want that team's boxplot, or maybe keep all for comparison?
+    // User said "displays only that team's stats". Let's filter strictly.
     const boxPlotData: Record<string, number[]> = {};
-    teams.forEach(team => {
+
+    const teamsToProcess = teamFilter ? [teamFilter] : teams;
+
+    teamsToProcess.forEach(team => {
         boxPlotData[team] = [];
     });
+
     if (qualityKpi) {
-        agents.forEach(agent => {
+        filteredAgents.forEach(agent => {
             const agentQAScores = scores.filter(
                 s => s.agent_id === agent.id && s.kpi_id === qualityKpi.id
             );
             agentQAScores.forEach(s => {
-                boxPlotData[agent.team].push(s.value);
+                if (boxPlotData[agent.team]) {
+                    boxPlotData[agent.team].push(s.value);
+                }
             });
         });
     }
 
-    // Team Stats for UI
+    // Team Stats for UI (Always return ALL teams for the top buttons/cards, so user can switch)
     const teamStats = teams.map(team => {
-        const teamAgents = agents.filter(a => a.team === team);
+        const teamAgents = agents.filter(a => a.team === team); // Always use all agents for summary cards
         const teamScores = scores.filter(s =>
             teamAgents.some(a => a.id === s.agent_id)
         );
@@ -472,8 +515,8 @@ export const getTeamLSSData = () => {
     });
 
     return {
-        teams,
-        teamStats,
+        teams, // List of all teams
+        teamStats, // Summary of all teams (unfiltered)
         paretoData,
         scatterData,
         histogramData,

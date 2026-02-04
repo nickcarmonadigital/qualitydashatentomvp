@@ -48,7 +48,7 @@
     - [ ] Add "Submitted Reports" list to main page.
     - [ ] Add Info/Help tooltips to form sections.
 - [ ] **Action Plans**: Fix "Back to Plans" button in New Action Plan.
-- [ ] **Agents**: Implement "Add New Agent" flow.
-- [ ] **Manager Dashboard**: Make summary cards clickable/expandable.
-- [ ] **LSS Dashboard**: Implement Team filtering on click.
+- [x] **Agents**: Implement "Add New Agent" flow.
+- [x] **Manager Dashboard**: Make summary cards clickable/expandable.
+- [x] **LSS Dashboard**: Implement Team filtering on click.
 - [ ] **Coaching Detail**: Wire up "Actions" buttons (Follow-up, etc).

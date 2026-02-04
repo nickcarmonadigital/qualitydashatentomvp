@@ -82,6 +82,11 @@ export default function CoachingSessionDetailPage() {
                     <h2 className="text-2xl font-bold">Coaching Session</h2>
                     <p className="text-muted-foreground">Session with {session.agentName}</p>
                 </div>
+                <div className="ml-auto">
+                    <Link href={`/coaching/${session.id}/edit`}>
+                        <Button variant="outline">Edit Session</Button>
+                    </Link>
+                </div>
             </div>
 
             {/* Main Content */}

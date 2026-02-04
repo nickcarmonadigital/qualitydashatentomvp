@@ -74,6 +74,28 @@ export const getMockData = () => {
         const atRiskAgentIds = getInterventionCandidatesInternal(cachedAgents, cachedScores)
             .map((c: { agent: Agent }) => c.agent.id);
         cachedCoachingSessions = generateCoachingSessions(cachedAgents, atRiskAgentIds);
+
+        // Add a FIXED session for reliable testing
+        cachedCoachingSessions.unshift({
+            id: 'CS-FIXED-001',
+            agent_id: cachedAgents[0]?.id || 'agent-001',
+            coach_id: 'coach-001',
+            coach_name: 'Sarah Connor',
+            coach_role: 'team_lead',
+            session_date: new Date().toISOString().split('T')[0],
+            coaching_type: 'behavioral',
+            trigger_kpi_ids: [],
+            status: 'follow_up_required',
+            outcome: 'pending',
+            notes: 'Fixed session for demonstration purposes. This session will always be available.',
+            key_observations: ['Agent was late to shift', 'Adherence impact'],
+            action_items: ['Review schedule', 'Commit to on-time arrival'],
+            manager_notified: true,
+            problem_identified: true,
+            issue_resolved: false,
+            agent_commitment: 'I will set a daily alarm.',
+            supervisor_commitment: 'I will check in on arrival time for 1 week.'
+        });
     }
     return {
         agents: cachedAgents,

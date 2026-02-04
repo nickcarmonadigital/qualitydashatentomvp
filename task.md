@@ -30,7 +30,7 @@
 - [x] **LSS Tab Switching**: Enable deep linking in `lss-tools/page.tsx` (e.g., `?tab=randomizer`) so the tour shows the correct content.
 - [x] **Modular Tours**: Refactor `OnboardingTour` to support section-specific flows (Performance, Coaching, Ops).
 - [x] **Sidebar Tour Buttons**: Add "Play" buttons to Sidebar Group Headers.
-- [ ] **Fix Tour Flashing**: Resolve navigation loop in Performance Tour (Weekly Insight step).
-- [ ] **Fix Coaching Loading**: Debug infinite loading state in `/coaching/sessions` (or equivalent).
-- [ ] **Architecture Plan**: Document Multi-Tenant / Multi-Contract strategy.
-- [ ] **Verify Fixes**: Ensure tour is stable and pages load.
+- [x] **Fix Tour Flashing**: Resolve navigation loop in Performance Tour (Weekly Insight step).
+- [x] **Fix Coaching Loading**: Debug infinite loading state in `/coaching/sessions` (or equivalent).
+- [x] **Architecture Plan**: Document Multi-Tenant / Multi-Contract strategy.
+- [x] **Verify Fixes**: Ensure tour is stable and pages load.

@@ -1,5 +1,6 @@
 'use client';
 
+import { useState, useEffect } from 'react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { CTXTree } from '@/components/lss-tools/CTXTree';
@@ -8,17 +9,48 @@ import { ParetoChart } from '@/components/charts/ParetoChart';
 import { ScatterPlot } from '@/components/charts/ScatterPlot';
 import { Histogram } from '@/components/charts/Histogram';
 import { BoxPlot } from '@/components/charts/BoxPlot';
-import { Network, GitBranch, PenTool, BarChart3, ScatterChart as ScatterIcon, Sigma, Shuffle, ArrowRight } from 'lucide-react';
+import { getTeamLSSData } from '@/lib/mock-service';
+import { Network, GitBranch, PenTool, BarChart3, ScatterChart as ScatterIcon, Sigma, Shuffle, ArrowRight, Users } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import Link from 'next/link';
 
 export default function LSSToolsPage() {
+    const [lssData, setLssData] = useState<any>(null);
+
+    useEffect(() => {
+        setLssData(getTeamLSSData());
+    }, []);
+
+    if (!lssData) {
+        return <div className="p-8 text-center">Loading LSS data...</div>;
+    }
+
     return (
         <div className="space-y-6">
             <div>
                 <h2 className="text-3xl font-bold tracking-tight">Lean Six Sigma Tools</h2>
-                <p className="text-muted-foreground">Advanced root cause analysis and metric definition workbenches.</p>
+                <p className="text-muted-foreground">Advanced root cause analysis powered by real team data from {lssData.teamStats?.reduce((acc: number, t: any) => acc + t.agentCount, 0) || 0} agents.</p>
+            </div>
+
+            {/* Team Stats Summary */}
+            <div className="grid gap-4 md:grid-cols-4">
+                {lssData.teamStats?.map((team: any) => (
+                    <Card key={team.team}>
+                        <CardHeader className="pb-2">
+                            <CardTitle className="text-sm font-medium flex items-center gap-2">
+                                <Users className="h-4 w-4" />
+                                {team.team}
+                            </CardTitle>
+                        </CardHeader>
+                        <CardContent>
+                            <div className="text-2xl font-bold">{team.avgScore}%</div>
+                            <p className="text-xs text-muted-foreground">
+                                {team.agentCount} agents · {team.coachingSessions} coaching sessions
+                            </p>
+                        </CardContent>
+                    </Card>
+                ))}
             </div>
 
             {/* Audit Randomizer Link Card */}
@@ -100,64 +132,39 @@ export default function LSSToolsPage() {
 
                 <TabsContent value="pareto">
                     <ParetoChart
-                        title="Top Error Categories (Last 30 Days)"
-                        description="Focus on the 'Vital Few' causes that contribute to 80% of defects."
-                        data={[
-                            { name: 'Policy Knowledge', count: 120 },
-                            { name: 'System Latency', count: 45 },
-                            { name: 'Tooling Gap', count: 25 },
-                            { name: 'Process Ambiguity', count: 15 },
-                            { name: 'Outdated Doc', count: 10 },
-                            { name: 'User Error', count: 5 }
-                        ]}
+                        title="Coaching Issues by Type (All Teams)"
+                        description={`Root cause analysis based on ${lssData.paretoData?.reduce((acc: number, p: any) => acc + p.count, 0) || 0} coaching sessions across all teams.`}
+                        data={lssData.paretoData || []}
                     />
                 </TabsContent>
 
                 <TabsContent value="correlation">
                     <ScatterPlot
-                        title="AHT vs CSAT Correlation"
-                        description="Analyzing if lower handle times are negatively impacting customer satisfaction."
+                        title="AHT vs CSAT Correlation (All Agents)"
+                        description={`Analyzing ${lssData.scatterData?.length || 0} agents to identify if handle time impacts satisfaction.`}
                         xLabel="AHT (seconds)"
                         yLabel="CSAT (%)"
-                        data={[
-                            { x: 450, y: 95 },
-                            { x: 480, y: 92 },
-                            { x: 500, y: 88 },
-                            { x: 520, y: 85 },
-                            { x: 600, y: 80 },
-                            { x: 650, y: 75 },
-                            { x: 200, y: 60 }, // Outlier
-                            { x: 550, y: 82 },
-                            { x: 420, y: 98 },
-                            { x: 580, y: 78 }
-                        ]}
+                        data={lssData.scatterData?.map((d: any) => ({ x: d.x, y: d.y })) || []}
                     />
                 </TabsContent>
 
                 <TabsContent value="distributions">
                     <div className="grid gap-6 md:grid-cols-2">
                         <Histogram
-                            title="AHT Distribution"
-                            description="Frequency of Handle Times (Last 100 calls)."
-                            data={[
-                                300, 310, 320, 315, 305, 330, 340, 325, 318,
-                                400, 410, 420, 405, 390, 380, 450, 460, 470,
-                                500, 510, 520, 550, 600, 610, 620, 300, 310, 320,
-                                350, 360, 370, 380, 390, 400, 410, 420, 430
-                            ]}
-                            binCount={6}
+                            title="Quality Score Distribution"
+                            description={`Frequency distribution of ${lssData.histogramData?.length || 0} QA scores across all agents.`}
+                            data={lssData.histogramData || []}
+                            binCount={8}
                         />
                         <BoxPlot
                             title="Team Performance Variance"
-                            description="Spread of QA Scores across the team."
+                            description="QA score spread across all four teams."
                             unit="%"
-                            data={[
-                                85, 88, 90, 92, 95, 82, 78, 98, 99, 89, 91, 93,
-                                85, 87, 88, 84, 86, 90, 92, 94, 95, 96, 97, 80
-                            ]}
+                            data={lssData.boxPlotData?.['Team Alpha'] || lssData.histogramData?.slice(0, 30) || []}
                         />
                     </div>
                 </TabsContent>
+
                 <TabsContent value="5whys">
                     <Card>
                         <CardHeader>

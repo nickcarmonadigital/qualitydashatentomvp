@@ -264,4 +264,104 @@ export const getActionPlanById = (id: string) => {
     };
 }
 
+// LSS Tools Team-Based Data
+export const getTeamLSSData = () => {
+    const { agents, scores, kpis, coachingSessions } = getMockData();
 
+    // Get KPIs by name
+    const ahtKpi = kpis.find(k => k.name.toLowerCase().includes('aht'));
+    const csatKpi = kpis.find(k => k.name.toLowerCase().includes('csat'));
+    const qualityKpi = kpis.find(k => k.name.toLowerCase().includes('quality'));
+
+    // Get unique teams
+    const teams = [...new Set(agents.map(a => a.team))];
+
+    // ======== Pareto Data (Coaching Issues by Type) ========
+    const coachingTypeCounts: Record<string, number> = {};
+    coachingSessions.forEach(s => {
+        const type = s.coaching_type || 'unknown';
+        coachingTypeCounts[type] = (coachingTypeCounts[type] || 0) + 1;
+    });
+    const paretoData = Object.entries(coachingTypeCounts)
+        .map(([name, count]) => ({
+            name: name.replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase()),
+            count
+        }))
+        .sort((a, b) => b.count - a.count);
+
+    // ======== Scatter Data (AHT vs CSAT per agent) ========
+    const scatterData: { x: number; y: number; agent: string; team: string }[] = [];
+    agents.forEach(agent => {
+        const agentScores = scores.filter(s => s.agent_id === agent.id);
+        const ahtScores = ahtKpi ? agentScores.filter(s => s.kpi_id === ahtKpi.id) : [];
+        const csatScores = csatKpi ? agentScores.filter(s => s.kpi_id === csatKpi.id) : [];
+
+        const avgAHT = ahtScores.length > 0
+            ? ahtScores.reduce((acc, s) => acc + s.value, 0) / ahtScores.length
+            : 0;
+        const avgCSAT = csatScores.length > 0
+            ? csatScores.reduce((acc, s) => acc + s.value, 0) / csatScores.length
+            : 0;
+
+        if (avgAHT > 0 && avgCSAT > 0) {
+            scatterData.push({
+                x: Math.round(avgAHT * 6), // Convert % to seconds-ish for demo
+                y: Number(avgCSAT.toFixed(1)),
+                agent: agent.name,
+                team: agent.team
+            });
+        }
+    });
+
+    // ======== Histogram Data (All QA scores) ========
+    const histogramData: number[] = [];
+    if (qualityKpi) {
+        scores
+            .filter(s => s.kpi_id === qualityKpi.id)
+            .forEach(s => histogramData.push(s.value));
+    }
+
+    // ======== BoxPlot Data (QA scores by team) ========
+    const boxPlotData: Record<string, number[]> = {};
+    teams.forEach(team => {
+        boxPlotData[team] = [];
+    });
+    if (qualityKpi) {
+        agents.forEach(agent => {
+            const agentQAScores = scores.filter(
+                s => s.agent_id === agent.id && s.kpi_id === qualityKpi.id
+            );
+            agentQAScores.forEach(s => {
+                boxPlotData[agent.team].push(s.value);
+            });
+        });
+    }
+
+    // Team Stats for UI
+    const teamStats = teams.map(team => {
+        const teamAgents = agents.filter(a => a.team === team);
+        const teamScores = scores.filter(s =>
+            teamAgents.some(a => a.id === s.agent_id)
+        );
+        const avg = teamScores.length > 0
+            ? teamScores.reduce((acc, s) => acc + s.value, 0) / teamScores.length
+            : 0;
+        return {
+            team,
+            agentCount: teamAgents.length,
+            avgScore: Number(avg.toFixed(1)),
+            coachingSessions: coachingSessions.filter(c =>
+                teamAgents.some(a => a.id === c.agent_id)
+            ).length
+        };
+    });
+
+    return {
+        teams,
+        teamStats,
+        paretoData,
+        scatterData,
+        histogramData,
+        boxPlotData
+    };
+}

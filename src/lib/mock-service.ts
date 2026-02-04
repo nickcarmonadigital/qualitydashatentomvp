@@ -1,4 +1,5 @@
-import { Agent, KPI, Score, ActionPlan, CoachingSession, CoachingAudit } from '@/types/domain';
+import { Agent, KPI, Score, ActionPlan, CoachingSession, CoachingAudit, GoalRow } from '@/types/domain';
+import { TrainingSession } from '@/types/sessions';
 import { generateAgents, generateKPIs, generateScores, generateActionPlans, generateCoachingSessions } from '@/script/seed_data';
 
 // Singleton-ish pattern to keeping data consistent for the User Session (Mock)
@@ -8,6 +9,59 @@ let cachedScores: Score[] = [];
 let cachedActionPlans: ActionPlan[] = [];
 let cachedCoachingSessions: CoachingSession[] = [];
 let cachedCoachingAudits: CoachingAudit[] = [];
+
+// Mock Data for Training/Calibration
+let trainingSessions: TrainingSession[] = [
+    {
+        id: 'cal-001',
+        date: '2025-01-15',
+        type: 'Calibration',
+        conductor: 'Sarah Connor',
+        calibrationResults: {
+            ticketIds: ['TKT-998', 'TKT-999', 'TKT-1000'],
+            consensusScore: {
+                understanding: true,
+                accuracy: true,
+                compliance: true,
+                quality: true,
+                timeliness: true
+            },
+            teamAlignmentScore: 88,
+            participants: [
+                {
+                    agentName: 'John Doe',
+                    scores: { understanding: true, accuracy: true, compliance: true, quality: true, timeliness: true },
+                    alignmentScore: 100
+                },
+                {
+                    agentName: 'Jane Smith',
+                    scores: { understanding: true, accuracy: false, compliance: true, quality: true, timeliness: true },
+                    alignmentScore: 80
+                }
+            ]
+        }
+    },
+    {
+        id: 'tb-001',
+        date: '2025-01-22',
+        type: 'Teach-back',
+        conductor: 'Sarah Connor',
+        teachBackDetails: {
+            topic: 'Smart+ UTM Logic',
+            speakerName: 'John Doe',
+            ticketExample: 'TKT-5542',
+            logicWalkthrough: 'Explained how UTMs parses differ in new engine.',
+            whyTestVerified: true,
+            edgeCasesDiscussed: 'Handled missing referrer edge case.'
+        }
+    }
+];
+
+export const getTrainingSessions = () => trainingSessions;
+export const addTrainingSession = (session: TrainingSession) => {
+    trainingSessions.unshift(session);
+    return session;
+};
 
 export const getMockData = () => {
     if (cachedAgents.length === 0) {

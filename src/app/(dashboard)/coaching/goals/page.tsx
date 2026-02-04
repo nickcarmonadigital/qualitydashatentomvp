@@ -33,22 +33,8 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Search, Target, ArrowUpRight, Calendar, User, Edit2 } from 'lucide-react';
 import { getCoachingSessions, getAgents, updateCoachingSession } from '@/lib/mock-service';
-import { CoachingSession, Agent } from '@/types/domain';
+import { CoachingSession, Agent, GoalRow } from '@/types/domain';
 import { toast } from 'sonner';
-
-// Helper interface for the table row
-interface GoalRow {
-    sessionId: string;
-    agentName: string;
-    agentId: string;
-    coachName: string;
-    date: string;
-    smartGoal: string; // From agent_commitment or specific goal field
-    targetDate: string; // From follow_up_date
-    status: string; // derived
-    outcome: string;
-    notes: string; // goal_tracking_notes
-}
 
 export default function SmartGoalsPage() {
     const [goals, setGoals] = useState<GoalRow[]>([]);

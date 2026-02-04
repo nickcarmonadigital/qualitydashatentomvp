@@ -15,7 +15,8 @@ import {
     PenTool,
     ClipboardList,
     MessageSquare,
-    ShieldCheck
+    ShieldCheck,
+    GraduationCap
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { signOut } from 'next-auth/react';
@@ -26,6 +27,7 @@ const navItems = [
     { name: 'Agent Performance', href: '/agents', icon: Users },
     { name: 'Coaching', href: '/coaching', icon: MessageSquare },
     { name: 'SMART Goals', href: '/coaching/goals', icon: Target },
+    { name: 'QA Calibration', href: '/sessions', icon: GraduationCap },
     { name: 'Manager View', href: '/manager', icon: ShieldCheck },
     { name: 'Six Sigma Tools', href: '/lss-tools', icon: Target },
     { name: '50/75 Analysis', href: '/fifty-seventy-five', icon: Target },

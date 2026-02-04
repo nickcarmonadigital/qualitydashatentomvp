@@ -31,7 +31,9 @@
     - [x] Create Audit Form Page (`/coaching/[id]/audit`)
     - [x] Update Session Detail Page to link Audit
     - [ ] Implement SMART Goals Tracker (`/coaching/goals`)
-    - [ ] Update 50/75 Rule Page (Weekly vs Annual View)
+    - [x] **50/75 Rule Updates**
+    - [x] Split into Weekly Monitor vs Annual Trend
+    - [x] Implement Tactical/Strategic logic
     - [x] Create Login Page (`/login`) <!-- id: 20 -->
 
 ## Phase 2: Core Components & UX

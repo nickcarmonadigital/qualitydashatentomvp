@@ -174,3 +174,16 @@ export interface CoachingAudit {
     opportunities: string;
 }
 
+export interface GoalRow {
+    sessionId: string;
+    agentName: string;
+    agentId: string;
+    coachName: string;
+    date: string;
+    smartGoal: string;
+    targetDate: string;
+    status: string;
+    outcome: string;
+    notes: string;
+}
+

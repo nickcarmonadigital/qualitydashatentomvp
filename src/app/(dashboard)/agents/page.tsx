@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import { useState, useEffect } from 'react';
 import { getAgents, getInterventionCandidates } from '@/lib/mock-service';
+import { PageGuide } from '@/components/ui/page-guide';
 import { Agent } from '@/types/domain';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
@@ -105,7 +106,17 @@ export default function AgentsPage() {
     return (
         <div className="space-y-6">
             <div className="flex items-center justify-between">
-                <h2 className="text-3xl font-bold tracking-tight">Agent Performance</h2>
+                <div>
+                    <h2 className="text-3xl font-bold tracking-tight flex items-center gap-2">
+                        Agent Performance
+                        <PageGuide
+                            title="Agent Roster"
+                            description="Complete directory of your team. Drill down for detailed performance history and coaching logs."
+                            items={['Performance Tiers', 'Risk Calculations', 'Direct Coaching Access']}
+                        />
+                    </h2>
+                    <p className="text-muted-foreground">Manage your team and monitor individual progress.</p>
+                </div>
                 <Button onClick={() => {
                     toast.info("Mock Feature", { description: "Agent creation is disabled in this demo. Agents are seed data." });
                 }}>Add Agent (Mock)</Button>

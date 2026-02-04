@@ -18,9 +18,10 @@ import {
   ClipboardList,
   ArrowRight,
   CheckCircle2,
-  Clock,
-  AlertCircle
+  AlertCircle,
+  Clock
 } from 'lucide-react';
+import { PageGuide } from '@/components/ui/page-guide';
 
 export default function DashboardPage() {
   const [metrics, setMetrics] = useState<any[]>([]);
@@ -84,11 +85,21 @@ export default function DashboardPage() {
 
   return (
     <div className="space-y-6 animate-fade-in">
+
       {/* Header */}
       <div className="flex justify-between items-start">
-        <div>
-          <h2 className="text-3xl font-bold tracking-tight text-slate-900">Dashboard</h2>
-          <p className="text-muted-foreground">Quality Operations Command Center</p>
+        <div className="flex items-start gap-4">
+          <div>
+            <h2 className="text-3xl font-bold tracking-tight text-slate-900 flex items-center gap-2">
+              Dashboard
+              <PageGuide
+                title="Command Center"
+                description="Your real-time overview of Quality Operations. Monitor team performance, identify at-risk agents, and track remediation velocity."
+                items={['Quick Stats Banner', 'Trend Analysis Charts', 'At-Risk Agent Feed', 'Quality Alerts']}
+              />
+            </h2>
+            <p className="text-muted-foreground">Quality Operations Command Center</p>
+          </div>
         </div>
         <div className="text-right text-sm text-muted-foreground">
           <p>Last updated: {new Date().toLocaleDateString()}</p>

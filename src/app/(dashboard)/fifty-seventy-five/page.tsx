@@ -12,6 +12,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Button } from '@/components/ui/button';
 import { AlertCircle, CheckCircle, TrendingUp, TrendingDown, ArrowRight } from 'lucide-react';
 import Link from 'next/link';
+import { PageGuide } from '@/components/ui/page-guide';
 
 export default function FiftySeventyFivePage() {
     const [agents, setAgents] = useState<Agent[]>([]);
@@ -101,7 +102,14 @@ export default function FiftySeventyFivePage() {
         <div className="space-y-6 animate-fade-in pb-20">
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                 <div>
-                    <h2 className="text-3xl font-bold tracking-tight">50/75 Rule Analysis</h2>
+                    <h2 className="text-3xl font-bold tracking-tight flex items-center gap-2">
+                        50/75 Rule Analysis
+                        <PageGuide
+                            title="50/75 Rule Analysis"
+                            description="Identify structural performance issues. Compare bottom quartile agents against the team average to isolate skill vs. will gaps."
+                            items={['Quartile Comparison', 'Trend Visualization', 'Intervention recommendations']}
+                        />
+                    </h2>
                     <p className="text-muted-foreground">Tactical weekly monitoring and strategic annual trending.</p>
                 </div>
                 <div className="w-[300px]">

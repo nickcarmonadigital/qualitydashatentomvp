@@ -14,6 +14,7 @@ import { Network, GitBranch, PenTool, BarChart3, ScatterChart as ScatterIcon, Si
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import Link from 'next/link';
+import { PageGuide } from '@/components/ui/page-guide';
 
 export default function LSSToolsPage() {
     const [lssData, setLssData] = useState<any>(null);
@@ -27,10 +28,19 @@ export default function LSSToolsPage() {
     }
 
     return (
-        <div className="space-y-6">
-            <div>
-                <h2 className="text-3xl font-bold tracking-tight">Lean Six Sigma Tools</h2>
-                <p className="text-muted-foreground">Advanced root cause analysis powered by real team data from {lssData.teamStats?.reduce((acc: number, t: any) => acc + t.agentCount, 0) || 0} agents.</p>
+        <div className="space-y-6 animate-fade-in">
+            <div className="flex justify-between items-start">
+                <div>
+                    <h2 className="text-3xl font-bold tracking-tight text-slate-900 flex items-center gap-2">
+                        Six Sigma Tools
+                        <PageGuide
+                            title="Six Sigma Toolkit"
+                            description="Standardized problem-solving templates for root cause analysis and process improvement."
+                            items={['Audit Randomizer', 'Fishbone Diagram', '5 Whys Analysis']}
+                        />
+                    </h2>
+                    <p className="text-muted-foreground">Standardized problem solving templates</p>
+                </div>
             </div>
 
             {/* Team Stats Summary */}

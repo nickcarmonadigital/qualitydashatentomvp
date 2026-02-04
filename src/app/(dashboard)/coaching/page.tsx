@@ -18,6 +18,7 @@ import {
     Plus
 } from 'lucide-react';
 import { DownloadCSVButton } from '@/components/ui/download-button';
+import { PageGuide } from '@/components/ui/page-guide';
 
 const getCoachingTypeBadge = (type: string) => {
     const styles: Record<string, { variant: 'default' | 'destructive' | 'secondary' | 'outline', label: string }> = {
@@ -74,8 +75,15 @@ export default function CoachingPage() {
             {/* Header */}
             <div className="flex justify-between items-start">
                 <div>
-                    <h2 className="text-3xl font-bold tracking-tight text-slate-900">Coaching Sessions</h2>
-                    <p className="text-muted-foreground">Track and manage agent coaching activities</p>
+                    <h2 className="text-3xl font-bold tracking-tight flex items-center gap-2">
+                        Coaching Sessions
+                        <PageGuide
+                            title="Coaching Sessions"
+                            description="Manage agent development. Log new sessions, track outcomes, and monitor commitment adherence."
+                            items={['Session History', 'Outcome Tracking', 'Smart Goal Integration']}
+                        />
+                    </h2>
+                    <p className="text-muted-foreground">Track and manage agent development sessions.</p>
                 </div>
                 <div className="flex gap-2">
                     <DownloadCSVButton
@@ -195,7 +203,7 @@ export default function CoachingPage() {
                             <p className="text-center text-muted-foreground py-8">No coaching sessions found.</p>
                         ) : (
                             filteredSessions.map((session) => (
-                                <Link key={session.id} href={`/coaching/${session.id}`}>
+                                <Link key={session.id} href={`/ coaching / ${session.id} `}>
                                     <div className="flex items-center justify-between p-4 rounded-lg border hover:bg-slate-50 transition-colors cursor-pointer group">
                                         <div className="flex items-center gap-4">
                                             <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">

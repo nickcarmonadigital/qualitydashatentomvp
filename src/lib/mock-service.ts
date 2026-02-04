@@ -271,6 +271,15 @@ export const createCoachingSession = (sessionData: Omit<CoachingSession, 'id' | 
     return newSession;
 }
 
+export const updateCoachingSession = (id: string, updates: Partial<CoachingSession>): CoachingSession | null => {
+    const { coachingSessions } = getMockData();
+    const index = coachingSessions.findIndex(s => s.id === id);
+    if (index === -1) return null;
+
+    coachingSessions[index] = { ...coachingSessions[index], ...updates };
+    return coachingSessions[index];
+}
+
 export const getActionPlanById = (id: string) => {
     const { actionPlans, agents } = getMockData();
     const plan = actionPlans.find(p => p.id === id);

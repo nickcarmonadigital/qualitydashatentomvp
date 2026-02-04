@@ -121,6 +121,9 @@ export interface CoachingSession {
     agent_commitment: string;
     supervisor_commitment: string;
 
+    // Goal Tracking
+    goal_tracking_notes?: string; // Notes from the SMART Goals Tracker
+
     action_items: string[];
     follow_up_date?: string;
 

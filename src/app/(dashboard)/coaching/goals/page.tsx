@@ -21,9 +21,20 @@ import {
     SelectTrigger,
     SelectValue,
 } from '@/components/ui/select';
-import { Search, Target, ArrowUpRight, Calendar, User } from 'lucide-react';
-import { getCoachingSessions, getAgents } from '@/lib/mock-service';
+import {
+    Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogFooter,
+    DialogHeader,
+    DialogTitle,
+} from "@/components/ui/dialog";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import { Search, Target, ArrowUpRight, Calendar, User, Edit2 } from 'lucide-react';
+import { getCoachingSessions, getAgents, updateCoachingSession } from '@/lib/mock-service';
 import { CoachingSession, Agent } from '@/types/domain';
+import { toast } from 'sonner';
 
 // Helper interface for the table row
 interface GoalRow {
@@ -36,11 +47,18 @@ interface GoalRow {
     targetDate: string; // From follow_up_date
     status: string; // derived
     outcome: string;
+    notes: string; // goal_tracking_notes
 }
 
 export default function SmartGoalsPage() {
     const [goals, setGoals] = useState<GoalRow[]>([]);
     const [filteredGoals, setFilteredGoals] = useState<GoalRow[]>([]);
+    const [selectedGoal, setSelectedGoal] = useState<GoalRow | null>(null);
+    const [isDialogOpen, setIsDialogOpen] = useState(false);
+
+    // Edit Form State
+    const [editStatus, setEditStatus] = useState('');
+    const [editNotes, setEditNotes] = useState('');
 
     // Filters
     const [search, setSearch] = useState('');
@@ -85,7 +103,8 @@ export default function SmartGoalsPage() {
                     smartGoal: s.agent_commitment || s.action_items[0] || "See session notes",
                     targetDate: s.follow_up_date || 'N/A',
                     status,
-                    outcome: s.outcome
+                    outcome: s.outcome,
+                    notes: s.goal_tracking_notes || ''
                 };
             });
 
@@ -111,6 +130,47 @@ export default function SmartGoalsPage() {
 
         setFilteredGoals(result);
     }, [search, statusFilter, goals]);
+
+    const handleOpenDialog = (goal: GoalRow) => {
+        setSelectedGoal(goal);
+        setEditStatus(goal.status); // Default to current
+        setEditNotes(goal.notes);
+        setIsDialogOpen(true);
+    };
+
+    const handleSaveGoal = () => {
+        if (!selectedGoal) return;
+
+        // Map UI Status back to domain outcome if possible
+        // This is a simplification. Ideally, we update outcome OR a specific goal status field.
+        let newOutcome = selectedGoal.outcome;
+        if (editStatus === 'Achieved') newOutcome = 'improved';
+        if (editStatus === 'Missed') newOutcome = 'declined';
+
+        // Update Mock Service
+        updateCoachingSession(selectedGoal.sessionId, {
+            outcome: newOutcome as any,
+            goal_tracking_notes: editNotes
+        });
+
+        // Update Local State
+        const updatedGoals = goals.map(g => {
+            if (g.sessionId === selectedGoal.sessionId) {
+                return { ...g, status: editStatus, outcome: newOutcome, notes: editNotes };
+            }
+            return g;
+        });
+        setGoals(updatedGoals);
+        setFilteredGoals(filteredGoals.map(g => { // naive update of filtered
+            if (g.sessionId === selectedGoal.sessionId) {
+                return { ...g, status: editStatus, outcome: newOutcome, notes: editNotes };
+            }
+            return g;
+        }));
+
+        toast.success("Goal updated successfully");
+        setIsDialogOpen(false);
+    };
 
     const getStatusBadge = (status: string) => {
         switch (status) {
@@ -186,7 +246,11 @@ export default function SmartGoalsPage() {
                                     </TableRow>
                                 ) : (
                                     filteredGoals.map((goal) => (
-                                        <TableRow key={goal.sessionId}>
+                                        <TableRow
+                                            key={goal.sessionId}
+                                            className="cursor-pointer hover:bg-slate-50"
+                                            onClick={() => handleOpenDialog(goal)}
+                                        >
                                             <TableCell className="font-medium">
                                                 <div className="flex items-center gap-2">
                                                     <User className="h-4 w-4 text-slate-400" />
@@ -194,7 +258,7 @@ export default function SmartGoalsPage() {
                                                 </div>
                                             </TableCell>
                                             <TableCell className="max-w-[400px]">
-                                                <div className="truncate font-medium text-slate-700" title={goal.smartGoal}>
+                                                <div className="truncate font-medium text-slate-700 hover:underline hover:text-blue-600" title={goal.smartGoal}>
                                                     {goal.smartGoal}
                                                 </div>
                                                 <div className="text-xs text-muted-foreground mt-0.5 flex items-center gap-1">
@@ -212,11 +276,9 @@ export default function SmartGoalsPage() {
                                                 {getStatusBadge(goal.status)}
                                             </TableCell>
                                             <TableCell className="text-right">
-                                                <Link href={`/coaching/${goal.sessionId}`}>
-                                                    <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
-                                                        <ArrowUpRight className="h-4 w-4" />
-                                                    </Button>
-                                                </Link>
+                                                <Button variant="ghost" size="sm">
+                                                    <Edit2 className="h-4 w-4 text-slate-400" />
+                                                </Button>
                                             </TableCell>
                                         </TableRow>
                                     ))
@@ -226,6 +288,70 @@ export default function SmartGoalsPage() {
                     </div>
                 </CardContent>
             </Card>
+
+            <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+                <DialogContent className="sm:max-w-[500px]">
+                    <DialogHeader>
+                        <DialogTitle>Evaluate SMART Goal</DialogTitle>
+                        <DialogDescription>Track progress and update the outcome for this goal.</DialogDescription>
+                    </DialogHeader>
+                    {selectedGoal && (
+                        <div className="space-y-4 py-4">
+                            <div className="space-y-1">
+                                <Label className="text-xs text-muted-foreground uppercase tracking-wider">The Goal</Label>
+                                <div className="p-3 bg-slate-50 border rounded-md text-sm font-medium italic">
+                                    "{selectedGoal.smartGoal}"
+                                </div>
+                            </div>
+
+                            <div className="grid grid-cols-2 gap-4">
+                                <div className="space-y-1">
+                                    <Label className="text-xs text-muted-foreground uppercase tracking-wider">Agent</Label>
+                                    <div className="text-sm">{selectedGoal.agentName}</div>
+                                </div>
+                                <div className="space-y-1">
+                                    <Label className="text-xs text-muted-foreground uppercase tracking-wider">Target Date</Label>
+                                    <div className="text-sm font-semibold">{selectedGoal.targetDate}</div>
+                                </div>
+                            </div>
+
+                            <div className="space-y-2">
+                                <Label>Current Status</Label>
+                                <Select value={editStatus} onValueChange={setEditStatus}>
+                                    <SelectTrigger>
+                                        <SelectValue />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        <SelectItem value="In Progress">In Progress</SelectItem>
+                                        <SelectItem value="Achieved">Achieved / Improved</SelectItem>
+                                        <SelectItem value="Missed">Missed / Failed</SelectItem>
+                                    </SelectContent>
+                                </Select>
+                            </div>
+
+                            <div className="space-y-2">
+                                <Label>Tracking Notes / Observations</Label>
+                                <Textarea
+                                    placeholder="Enter your observations on progress..."
+                                    value={editNotes}
+                                    onChange={(e) => setEditNotes(e.target.value)}
+                                    rows={4}
+                                />
+                            </div>
+
+                            <div className="pt-2">
+                                <Link href={`/coaching/${selectedGoal.sessionId}`} className="text-xs text-blue-600 hover:underline flex items-center gap-1">
+                                    View Full Coaching Session <ArrowUpRight className="h-3 w-3" />
+                                </Link>
+                            </div>
+                        </div>
+                    )}
+                    <DialogFooter>
+                        <Button variant="outline" onClick={() => setIsDialogOpen(false)}>Cancel</Button>
+                        <Button onClick={handleSaveGoal}>Save Update</Button>
+                    </DialogFooter>
+                </DialogContent>
+            </Dialog>
         </div>
     );
 }

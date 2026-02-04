@@ -25,6 +25,13 @@
     - [x] **Security Config**: Enforce Password Policy (12 chars, special) & Session Timeout (8h) <!-- id: 17 -->
     - [ ] **MFA Support**: Implement 2FA enrollment/verification UI flow <!-- id: 18 -->
     - [ ] Implement Role-Based Access Control (RBAC) hooks/utils <!-- id: 19 -->
+    - [x] Create Implementation Plan
+    - [x] Define `CoachingAudit` interface
+    - [x] Create `createCoachingAudit` in mock service
+    - [x] Create Audit Form Page (`/coaching/[id]/audit`)
+    - [x] Update Session Detail Page to link Audit
+    - [ ] Implement SMART Goals Tracker (`/coaching/goals`)
+    - [ ] Update 50/75 Rule Page (Weekly vs Annual View)
     - [x] Create Login Page (`/login`) <!-- id: 20 -->
 
 ## Phase 2: Core Components & UX

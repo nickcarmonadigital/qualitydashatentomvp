@@ -1,230 +1,277 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { getAgents, getScores, getKPIs } from '@/lib/mock-service';
-import { Agent, Score, KPI } from '@/types/domain';
-import { analyze5075, Rule5075Result } from '@/lib/lss/fifty-seventy-five';
+import { getAgents, getKPIs, getScores } from '@/lib/mock-service'; // mock service needs to stay lightweight
+import { Agent, KPI, Score } from '@/types/domain';
+import { analyzeAnnualTrend, analyzeWeeklyMonitor, AnnualTrendResult, WeeklyMonitorResult } from '@/lib/lss/fifty-seventy-five';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Badge } from '@/components/ui/badge';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { AlertCircle, CheckCircle, HelpCircle, Download } from 'lucide-react';
-import { exportToCSV } from '@/lib/export';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Button } from '@/components/ui/button';
-
-interface AnalysisRow {
-    agentName: string;
-    agentTeam: string;
-    median: number;
-    result: Rule5075Result;
-    q1: number;
-    q3: number;
-}
+import { AlertCircle, CheckCircle, TrendingUp, TrendingDown, ArrowRight } from 'lucide-react';
+import Link from 'next/link';
 
 export default function FiftySeventyFivePage() {
     const [agents, setAgents] = useState<Agent[]>([]);
-    const [scores, setScores] = useState<Score[]>([]);
     const [kpis, setKPIs] = useState<KPI[]>([]);
     const [selectedKpiId, setSelectedKpiId] = useState<string>('');
-    const [analysis, setAnalysis] = useState<AnalysisRow[]>([]);
+
+    // Analysis State
+    const [weeklyData, setWeeklyData] = useState<{ agent: Agent, analysis: WeeklyMonitorResult }[]>([]);
+    const [annualData, setAnnualData] = useState<{ agent: Agent, analysis: AnnualTrendResult }[]>([]);
 
     useEffect(() => {
         setAgents(getAgents());
-        setScores(getScores());
         const allKpis = getKPIs();
         setKPIs(allKpis);
         if (allKpis.length > 0) setSelectedKpiId(allKpis[0].id);
     }, []);
 
+    // Simulate/Aggregate Data when KPI changes
     useEffect(() => {
         if (!selectedKpiId || agents.length === 0) return;
 
         const currentKpi = kpis.find(k => k.id === selectedKpiId);
         if (!currentKpi) return;
 
-        // Perform Analysis for each agent
-        const results: AnalysisRow[] = agents.map(agent => {
-            // Get last 20 scores for this KPI
-            const agentScores = scores
-                .filter(s => s.agent_id === agent.id && s.kpi_id === selectedKpiId)
-                .map(s => s.value);
+        const isHigherBetter = currentKpi.name !== 'AHT';
 
-            if (agentScores.length < 5) {
+        // Generate Analysis for each agent
+        const wData = [];
+        const aData = [];
+
+        for (const agent of agents) {
+            // MOCK DATA GENERATION FOR DEMO PURPOSES
+            // In real app, this would come from the database aggregated by month/week
+
+            // Random variation based on agent ID to make it consistent but varied
+            const seed = agent.id.length;
+            const basePerformance = isHigherBetter ? 80 + (seed % 20) : 500 - (seed * 10);
+
+            // 1. Weekly Data (Last 4 weeks)
+            const weeks = ['Week 1', 'Week 2', 'Week 3', 'Week 4'].map((w, i) => {
+                const variance = (Math.random() * 10) - 5;
                 return {
-                    agentName: agent.name,
-                    agentTeam: agent.team,
-                    median: 0,
-                    result: 'INCONSISTENT', // Default/Fallback
-                    q1: 0,
-                    q3: 0
+                    week: w,
+                    value: Math.round(basePerformance + variance)
                 };
-            }
+            });
+            const wAnalysis = analyzeWeeklyMonitor(weeks, currentKpi.target, isHigherBetter);
+            wData.push({ agent, analysis: wAnalysis });
 
-            const isHigherBetter = currentKpi.name !== 'AHT'; // Rough logic for demo
-            const analysis = analyze5075(agentScores, currentKpi.target, isHigherBetter);
-
-            return {
-                agentName: agent.name,
-                agentTeam: agent.team,
-                median: analysis.median,
-                result: analysis.result,
-                q1: analysis.quartiles.q1,
-                q3: analysis.quartiles.q3
-            };
-        });
-
-        // Sort by result (Incapable first)
-        setAnalysis(results.sort((a, b) => a.median - b.median));
-    }, [selectedKpiId, agents, scores, kpis]);
-
-    const [showFocusOnly, setShowFocusOnly] = useState(true);
-
-    const filteredAnalysis = (showFocusOnly
-        ? analysis.filter(a => a.result !== 'CAPABLE')
-        : analysis).sort((a, b) => {
-            const p: Record<string, number> = { 'INCAPABLE': 0, 'INCONSISTENT': 1, 'CAPABLE': 2 };
-            return (p[a.result] ?? 2) - (p[b.result] ?? 2);
-        });
-
-    const getStatusBadge = (status: Rule5075Result) => {
-        switch (status) {
-            case 'CAPABLE':
-                return <Badge className="bg-green-500 hover:bg-green-600"><CheckCircle className="w-3 h-3 mr-1" /> Capable</Badge>;
-            case 'INCAPABLE':
-                return <Badge variant="destructive"><AlertCircle className="w-3 h-3 mr-1" /> Incapable</Badge>;
-            case 'INCONSISTENT':
-                return <Badge variant="secondary" className="bg-yellow-100 text-yellow-800 hover:bg-yellow-200"><HelpCircle className="w-3 h-3 mr-1" /> Inconsistent</Badge>;
+            // 2. Annual Data (Last 6 months)
+            const months = ['Aug', 'Sep', 'Oct', 'Nov', 'Dec', 'Jan'].map((m, i) => {
+                // Simulate improvement or decline logic
+                const trendFactor = (i * 2);
+                const variance = (Math.random() * 10) - 5;
+                return {
+                    month: m,
+                    value: Math.round(basePerformance + trendFactor + variance)
+                };
+            });
+            const aAnalysis = analyzeAnnualTrend(months, currentKpi.target, isHigherBetter);
+            aData.push({ agent, analysis: aAnalysis });
         }
-    };
 
-    const handleExport = () => {
-        const data = analysis.map(row => ({
-            Agent: row.agentName,
-            Team: row.agentTeam,
-            Status: row.result,
-            Median: row.median,
-            Q1: row.q1,
-            Q3: row.q3
-        }));
-        exportToCSV(data, '50_75_analysis_export');
-    };
+        setWeeklyData(wData);
+        setAnnualData(aData);
+
+    }, [selectedKpiId, agents, kpis]);
 
     return (
-        <div className="space-y-6">
+        <div className="space-y-6 animate-fade-in pb-20">
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                 <div>
-                    <h2 className="text-3xl font-bold tracking-tight">50/75 Rule Analysis (Q3 & Q4 Focus)</h2>
-                    <p className="text-muted-foreground">Diagnostic tool to identify and support agents in the 3rd and 4th Quartiles (Below Median).</p>
+                    <h2 className="text-3xl font-bold tracking-tight">50/75 Rule Analysis</h2>
+                    <p className="text-muted-foreground">Tactical weekly monitoring and strategic annual trending.</p>
                 </div>
-                <div className="flex items-center gap-2">
-                    <div className="flex items-center gap-2 mr-4">
-                        <Button
-                            variant={showFocusOnly ? "secondary" : "ghost"}
-                            size="sm"
-                            onClick={() => setShowFocusOnly(!showFocusOnly)}
-                        >
-                            {showFocusOnly ? "Showing Q3/Q4 Only" : "Showing All Agents"}
-                        </Button>
-                    </div>
-                    <Button variant="outline" onClick={handleExport} disabled={analysis.length === 0}>
-                        <Download className="h-4 w-4 mr-2" />
-                        Export
-                    </Button>
-                    <div className="w-[300px]">
-                        <Select value={selectedKpiId} onValueChange={setSelectedKpiId}>
-                            <SelectTrigger>
-                                <SelectValue placeholder="Select KPI" />
-                            </SelectTrigger>
-                            <SelectContent>
-                                {kpis.map(k => (
-                                    <SelectItem key={k.id} value={k.id}>{k.name} (Target: {k.target})</SelectItem>
-                                ))}
-                            </SelectContent>
-                        </Select>
-                    </div>
+                <div className="w-[300px]">
+                    <Select value={selectedKpiId} onValueChange={setSelectedKpiId}>
+                        <SelectTrigger>
+                            <SelectValue placeholder="Select KPI" />
+                        </SelectTrigger>
+                        <SelectContent>
+                            {kpis.map(k => (
+                                <SelectItem key={k.id} value={k.id}>{k.name} (Target: {k.target})</SelectItem>
+                            ))}
+                        </SelectContent>
+                    </Select>
                 </div>
             </div>
 
-            <div className="grid gap-4 md:grid-cols-3">
-                <Card>
-                    <CardHeader className="pb-2">
-                        <CardTitle className="text-sm font-medium text-muted-foreground">Process Capable</CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                        <div className="text-2xl font-bold text-green-600">
-                            {analysis.filter(r => r.result === 'CAPABLE').length} Agents
-                        </div>
-                    </CardContent>
-                </Card>
-                <Card>
-                    <CardHeader className="pb-2">
-                        <CardTitle className="text-sm font-medium text-muted-foreground">Consistency Issues (VSF/Gap)</CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                        <div className="text-2xl font-bold text-yellow-600">
-                            {analysis.filter(r => r.result === 'INCONSISTENT').length} Agents
-                        </div>
-                    </CardContent>
-                </Card>
-                <Card>
-                    <CardHeader className="pb-2">
-                        <CardTitle className="text-sm font-medium text-muted-foreground">Process Incapable (Shift Mean)</CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                        <div className="text-2xl font-bold text-red-600">
-                            {analysis.filter(r => r.result === 'INCAPABLE').length} Agents
-                        </div>
-                    </CardContent>
-                </Card>
-            </div>
+            <Tabs defaultValue="weekly" className="space-y-4">
+                <TabsList>
+                    <TabsTrigger value="weekly">Weekly Monitor (Tactical)</TabsTrigger>
+                    <TabsTrigger value="annual">Annual Trend (Strategic)</TabsTrigger>
+                </TabsList>
 
-            <Card>
-                <CardHeader>
-                    <CardTitle>Detailed Agent Analysis</CardTitle>
-                    <CardDescription>
-                        Breakdown of Median (50th) and Q1/Q3 performance against target.
-                    </CardDescription>
-                </CardHeader>
-                <CardContent>
-                    <Table>
-                        <TableHeader>
-                            <TableRow>
-                                <TableHead>Agent</TableHead>
-                                <TableHead>Team</TableHead>
-                                <TableHead>Status</TableHead>
-                                <TableHead className="text-right">Median (50th)</TableHead>
-                                <TableHead className="text-right">Q1 (25th)</TableHead>
-                                <TableHead className="text-right">Q3 (75th)</TableHead>
-                                <TableHead>Recommendation</TableHead>
-                            </TableRow>
-                        </TableHeader>
-                        <TableBody>
-                            {filteredAnalysis.length === 0 ? (
-                                <TableRow>
-                                    <TableCell colSpan={7} className="text-center h-24 text-muted-foreground">
-                                        No agents found matching criteria.
-                                    </TableCell>
-                                </TableRow>
-                            ) : (
-                                filteredAnalysis.map((row, i) => (
-                                    <TableRow key={i}>
-                                        <TableCell className="font-medium">{row.agentName}</TableCell>
-                                        <TableCell>{row.agentTeam}</TableCell>
-                                        <TableCell>{getStatusBadge(row.result)}</TableCell>
-                                        <TableCell className="text-right font-mono">{row.median.toFixed(1)}</TableCell>
-                                        <TableCell className="text-right text-muted-foreground">{row.q1.toFixed(1)}</TableCell>
-                                        <TableCell className="text-right text-muted-foreground">{row.q3.toFixed(1)}</TableCell>
-                                        <TableCell className="text-sm">
-                                            {row.result === 'INCAPABLE' ? 'Coaching on Basics / Knowledge' :
-                                                row.result === 'INCONSISTENT' ? 'Focus on Workflow / Standardization' :
-                                                    'Maintain / Reward'}
-                                        </TableCell>
+                {/* WEEKLY VIEW */}
+                <TabsContent value="weekly" className="space-y-4">
+                    <div className="grid gap-4 md:grid-cols-3">
+                        <Card>
+                            <CardHeader className="pb-2">
+                                <CardTitle className="text-sm font-medium text-muted-foreground">Intervention Required</CardTitle>
+                            </CardHeader>
+                            <CardContent>
+                                <div className="text-2xl font-bold text-red-600">
+                                    {weeklyData.filter(d => d.analysis.status === 'Intervention Required').length} Agents
+                                </div>
+                                <p className="text-xs text-muted-foreground">High priority coaching needed</p>
+                            </CardContent>
+                        </Card>
+                        <Card>
+                            <CardHeader className="pb-2">
+                                <CardTitle className="text-sm font-medium text-muted-foreground">At Risk</CardTitle>
+                            </CardHeader>
+                            <CardContent>
+                                <div className="text-2xl font-bold text-yellow-600">
+                                    {weeklyData.filter(d => d.analysis.status === 'At Risk').length} Agents
+                                </div>
+                                <p className="text-xs text-muted-foreground">Failing MTD Average</p>
+                            </CardContent>
+                        </Card>
+                        <Card>
+                            <CardHeader className="pb-2">
+                                <CardTitle className="text-sm font-medium text-muted-foreground">On Track</CardTitle>
+                            </CardHeader>
+                            <CardContent>
+                                <div className="text-2xl font-bold text-green-600">
+                                    {weeklyData.filter(d => d.analysis.status === 'On Track').length} Agents
+                                </div>
+                                <p className="text-xs text-muted-foreground">Meeting weekly targets</p>
+                            </CardContent>
+                        </Card>
+                    </div>
+
+                    <Card>
+                        <CardHeader>
+                            <CardTitle>Weekly Performance Matrix</CardTitle>
+                            <CardDescription>Performance by week for current month. Fix issues before month-end.</CardDescription>
+                        </CardHeader>
+                        <CardContent>
+                            <Table>
+                                <TableHeader>
+                                    <TableRow>
+                                        <TableHead>Agent</TableHead>
+                                        <TableHead>Status</TableHead>
+                                        <TableHead className="text-right">Week 1</TableHead>
+                                        <TableHead className="text-right">Week 2</TableHead>
+                                        <TableHead className="text-right">Week 3</TableHead>
+                                        <TableHead className="text-right">Week 4</TableHead>
+                                        <TableHead className="text-right font-bold">MTD Avg</TableHead>
+                                        <TableHead className="text-right">Action</TableHead>
                                     </TableRow>
-                                )))}
-                        </TableBody>
-                    </Table>
-                </CardContent>
-            </Card>
+                                </TableHeader>
+                                <TableBody>
+                                    {weeklyData.map((row, i) => (
+                                        <TableRow key={i}>
+                                            <TableCell className="font-medium">{row.agent.name}</TableCell>
+                                            <TableCell>
+                                                <Badge variant={
+                                                    row.analysis.status === 'Intervention Required' ? 'destructive' :
+                                                        row.analysis.status === 'At Risk' ? 'secondary' : 'default'
+                                                } className={
+                                                    row.analysis.status === 'At Risk' ? 'bg-yellow-100 text-yellow-800' :
+                                                        row.analysis.status === 'On Track' ? 'bg-green-100 text-green-800' : ''
+                                                }>
+                                                    {row.analysis.status}
+                                                </Badge>
+                                            </TableCell>
+                                            {row.analysis.weeks.map((w, idx) => (
+                                                <TableCell key={idx} className={w.metTarget ? 'text-green-600 text-right' : 'text-red-500 font-medium text-right'}>
+                                                    {w.value}
+                                                </TableCell>
+                                            ))}
+                                            <TableCell className="text-right font-bold">{row.analysis.mtdAverage.toFixed(1)}</TableCell>
+                                            <TableCell className="text-right">
+                                                {row.analysis.status !== 'On Track' && (
+                                                    <Link href={`/coaching/new?agentId=${row.agent.id}`}>
+                                                        <Button size="sm" variant="ghost" className="h-8">
+                                                            Coach <ArrowRight className="ml-2 h-3 w-3" />
+                                                        </Button>
+                                                    </Link>
+                                                )}
+                                            </TableCell>
+                                        </TableRow>
+                                    ))}
+                                </TableBody>
+                            </Table>
+                        </CardContent>
+                    </Card>
+                </TabsContent>
+
+                {/* ANNUAL VIEW */}
+                <TabsContent value="annual" className="space-y-4">
+                    <Card>
+                        <CardHeader>
+                            <CardTitle>Annual Strategic Trend (6-Month Lookback)</CardTitle>
+                            <CardDescription>
+                                Rule 1: 75% Compliance (5/6 Months). Rule 2: Consistent Improvement (2nd Half {'>'} 1st Half).
+                            </CardDescription>
+                        </CardHeader>
+                        <CardContent>
+                            <Table>
+                                <TableHeader>
+                                    <TableRow>
+                                        <TableHead>Agent</TableHead>
+                                        <TableHead>75% Rule</TableHead>
+                                        <TableHead>Improvement Rule</TableHead>
+                                        <TableHead className="text-right">History</TableHead>
+                                        <TableHead className="text-right">Trend</TableHead>
+                                    </TableRow>
+                                </TableHeader>
+                                <TableBody>
+                                    {annualData.map((row, i) => (
+                                        <TableRow key={i}>
+                                            <TableCell className="font-medium">{row.agent.name}</TableCell>
+                                            <TableCell>
+                                                <div className="flex items-center gap-2">
+                                                    {row.analysis.compliance.pass ?
+                                                        <Badge className="bg-green-100 text-green-800 hover:bg-green-200">Pass</Badge> :
+                                                        <Badge variant="destructive">Fail</Badge>
+                                                    }
+                                                    <span className="text-xs text-muted-foreground">({row.analysis.compliance.monthsMet}/6)</span>
+                                                </div>
+                                            </TableCell>
+                                            <TableCell>
+                                                <div className="flex items-center gap-2">
+                                                    {row.analysis.improvement.pass ?
+                                                        <Badge className="bg-green-100 text-green-800 hover:bg-green-200">Pass</Badge> :
+                                                        <Badge variant="secondary" className="bg-yellow-100 text-yellow-800">Fail</Badge>
+                                                    }
+                                                    <span className="text-xs text-muted-foreground">
+                                                        ({row.analysis.improvement.secondHalfAvg.toFixed(0)} vs {row.analysis.improvement.firstHalfAvg.toFixed(0)})
+                                                    </span>
+                                                </div>
+                                            </TableCell>
+                                            <TableCell className="text-right">
+                                                <div className="flex justify-end gap-1">
+                                                    {row.analysis.monthlyValues.map((m, idx) => (
+                                                        <div key={idx}
+                                                            className={`w-6 h-6 flex items-center justify-center text-[10px] rounded ${m.metTarget ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}
+                                                            title={`${m.month}: ${m.value}`}
+                                                        >
+                                                            {m.month[0]}
+                                                        </div>
+                                                    ))}
+                                                </div>
+                                            </TableCell>
+                                            <TableCell className="text-right">
+                                                <div className={`flex items-center justify-end ${row.analysis.improvement.trend > 0 ? 'text-green-600' : 'text-red-500'}`}>
+                                                    {row.analysis.improvement.trend > 0 ? <TrendingUp className="h-4 w-4 mr-1" /> : <TrendingDown className="h-4 w-4 mr-1" />}
+                                                    {Math.abs(row.analysis.improvement.trend).toFixed(1)}
+                                                </div>
+                                            </TableCell>
+                                        </TableRow>
+                                    ))}
+                                </TableBody>
+                            </Table>
+                        </CardContent>
+                    </Card>
+                </TabsContent>
+            </Tabs>
         </div>
     );
 }

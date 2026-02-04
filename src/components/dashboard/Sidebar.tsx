@@ -25,6 +25,7 @@ const navItems = [
     { name: 'Weekly Insights', href: '/weekly-insight', icon: FileText },
     { name: 'Agent Performance', href: '/agents', icon: Users },
     { name: 'Coaching', href: '/coaching', icon: MessageSquare },
+    { name: 'SMART Goals', href: '/coaching/goals', icon: Target },
     { name: 'Manager View', href: '/manager', icon: ShieldCheck },
     { name: 'Six Sigma Tools', href: '/lss-tools', icon: Target },
     { name: '50/75 Analysis', href: '/fifty-seventy-five', icon: Target },

@@ -153,14 +153,12 @@ export function Sidebar() {
                     scenario="LSS"
                 />
 
-                {isAdmin && (
-                    <SidebarGroup
-                        title="Administration"
-                        items={menuItems.admin}
-                        isOpen={openGroups.admin}
-                        onToggle={() => toggleGroup('admin')}
-                    />
-                )}
+                <SidebarGroup
+                    title="Administration"
+                    items={menuItems.admin}
+                    isOpen={openGroups.admin}
+                    onToggle={() => toggleGroup('admin')}
+                />
             </nav>
 
             <div className="p-4 border-t border-slate-800 space-y-2">

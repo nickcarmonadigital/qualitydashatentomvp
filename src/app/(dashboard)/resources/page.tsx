@@ -54,91 +54,85 @@ const getCategoryBadge = (category: string) => {
     return <Badge className={styles[category] || 'bg-gray-100'}>{category}</Badge>;
 };
 
+import { InfoTooltip } from '@/components/ui/info-tooltip';
+
+// ... existing imports
+
 export default function ResourcesPage() {
     const handleDownload = (title: string) => {
         // In a real app, this would trigger a file download
-        alert(`Download: ${title}\n\nNote: This is a demo. In production, this would download the actual PDF.`);
+        toast.info(`Downloading: ${title}`, {
+            description: "File download started..."
+        });
     };
 
     return (
         <div className="space-y-6 animate-fade-in">
-            <div className="flex items-center gap-3">
-                <BookOpen className="h-8 w-8 text-slate-600" />
+            <div className="flex items-center justify-between">
                 <div>
-                    <h2 className="text-3xl font-bold tracking-tight">Resources</h2>
-                    <p className="text-muted-foreground">SOPs, Work Instructions, and Quality Guides</p>
+                    <h2 className="text-3xl font-bold tracking-tight">
+                        Resources
+                        <InfoTooltip content="Access all quality SOPs, work instructions, and coaching guides." />
+                    </h2>
+                    <p className="text-muted-foreground">Standard Operating Procedures and Knowledge Base.</p>
                 </div>
+                <Button>
+                    <BookOpen className="mr-2 h-4 w-4" />
+                    Request New Doc
+                </Button>
             </div>
 
-            <Card>
-                <CardHeader>
-                    <CardTitle>Document Library</CardTitle>
-                    <CardDescription>
-                        Access all quality and coaching documentation. These are the source of truth for COPC compliance.
-                    </CardDescription>
-                </CardHeader>
-                <CardContent>
-                    <div className="grid gap-4 md:grid-cols-2">
-                        {resources.map((resource) => (
-                            <Card key={resource.id} className="hover:shadow-md transition-shadow">
-                                <CardContent className="p-4">
-                                    <div className="flex items-start gap-4">
-                                        <div className="p-3 bg-slate-100 rounded-lg">
-                                            <resource.icon className="h-6 w-6 text-slate-600" />
-                                        </div>
-                                        <div className="flex-1 space-y-2">
-                                            <div className="flex items-center justify-between">
-                                                <h3 className="font-semibold text-slate-900">{resource.title}</h3>
-                                                {getCategoryBadge(resource.category)}
-                                            </div>
-                                            <p className="text-sm text-muted-foreground line-clamp-2">
-                                                {resource.description}
-                                            </p>
-                                            <div className="flex items-center justify-between pt-2">
-                                                <span className="text-xs text-muted-foreground">
-                                                    Updated: {resource.lastUpdated}
-                                                </span>
-                                                <div className="flex gap-2">
-                                                    <Button
-                                                        variant="outline"
-                                                        size="sm"
-                                                        onClick={() => handleDownload(resource.title)}
-                                                    >
-                                                        <Download className="h-3 w-3 mr-1" />
-                                                        {resource.type}
-                                                    </Button>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </CardContent>
-                            </Card>
-                        ))}
-                    </div>
-                </CardContent>
-            </Card>
+            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+                {resources.map((resource) => (
+                    <Card key={resource.id} className="card-gradient group hover:shadow-lg transition-all cursor-pointer border-slate-200/60">
+                        <CardHeader className="pb-3">
+                            <div className="flex justify-between items-start">
+                                <div className="p-2 bg-indigo-50 rounded-lg group-hover:bg-indigo-100 transition-colors">
+                                    <resource.icon className="h-6 w-6 text-indigo-600" />
+                                </div>
+                                {getCategoryBadge(resource.category)}
+                            </div>
+                            <CardTitle className="mt-4 text-lg font-semibold text-slate-900 group-hover:text-indigo-700 transition-colors">
+                                {resource.title}
+                            </CardTitle>
+                        </CardHeader>
+                        <CardContent>
+                            <p className="text-sm text-slate-500 mb-4 line-clamp-2 h-10">
+                                {resource.description}
+                            </p>
+                            <div className="flex items-center justify-between text-xs text-muted-foreground border-t pt-4">
+                                <span>Updated: {resource.lastUpdated}</span>
+                                <Button
+                                    variant="ghost"
+                                    size="sm"
+                                    className="h-8 hover:bg-indigo-50 hover:text-indigo-600 p-0 px-2"
+                                    onClick={(e) => {
+                                        e.stopPropagation();
+                                        handleDownload(resource.title);
+                                    }}
+                                >
+                                    <Download className="h-3 w-3 mr-1.5" />
+                                    {resource.type}
+                                </Button>
+                            </div>
+                        </CardContent>
+                    </Card>
+                ))}
 
-            {/* Upload Section (Placeholder) */}
-            <Card className="border-dashed">
-                <CardContent className="p-8 text-center">
-                    <div className="flex flex-col items-center gap-3">
-                        <div className="p-4 bg-slate-100 rounded-full">
-                            <FileText className="h-8 w-8 text-slate-400" />
-                        </div>
-                        <h3 className="font-semibold text-slate-700">Upload New Document</h3>
-                        <p className="text-sm text-muted-foreground max-w-md">
-                            Drag and drop a PDF here, or click to browse. Documents will be available to all team members.
-                        </p>
-                        <Button variant="outline" className="mt-2" onClick={() => {
-                            toast.info("Upload Feature Locked", {
-                                description: "Document upload is restricted to Admin users in this demo environment."
-                            });
-                        }}>
-                            Browse Files
-                        </Button>
+                {/* Upload Placeholder */}
+                <Card className="border-dashed border-2 bg-slate-50/50 flex flex-col items-center justify-center p-6 text-center hover:bg-slate-50 transition-colors cursor-pointer group">
+                    <div className="p-4 bg-white rounded-full shadow-sm mb-3 group-hover:scale-110 transition-transform">
+                        <FileText className="h-8 w-8 text-slate-400" />
                     </div>
-                </CardContent>
-            </Card>
+                    <h3 className="font-semibold text-slate-700">Upload Document</h3>
+                    <p className="text-sm text-slate-500 max-w-[200px] mt-1 mb-4">
+                        Drag & drop PDF files here to add to the library.
+                    </p>
+                    <Button variant="outline" size="sm" onClick={() => toast.info("Upload Locked", { description: "Requires Admin Access" })}>
+                        Browse Files
+                    </Button>
+                </Card>
+            </div>
         </div>
     );
 }

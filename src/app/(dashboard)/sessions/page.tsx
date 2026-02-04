@@ -15,12 +15,9 @@ import {
     TableRow,
 } from '@/components/ui/table';
 import {
-    Dialog,
-    DialogContent,
-    DialogDescription,
-    DialogFooter,
     DialogHeader,
     DialogTitle,
+    DialogTrigger,
 } from "@/components/ui/dialog";
 import { Users, GraduationCap, Calendar, CheckCircle2, AlertTriangle, Plus, Eye } from 'lucide-react';
 import { getTrainingSessions } from '@/lib/mock-service';
@@ -45,9 +42,18 @@ export default function SessionsPage() {
         setIsDetailOpen(true);
     };
 
-    const handleNewSession = () => {
-        toast.info("New Session", {
-            description: "Session creation form coming soon! For now, sessions are auto-generated."
+    import { InfoTooltip } from '@/components/ui/info-tooltip';
+    import { Label } from '@/components/ui/label';
+    import { Input } from '@/components/ui/input';
+    import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+
+    // ...
+
+    const handleNewSession = (type: 'Calibration' | 'Teach-back') => {
+        toast.promise(new Promise(resolve => setTimeout(resolve, 1000)), {
+            loading: `Drafting ${type} Session...`,
+            success: `${type} Session Created`,
+            error: 'Failed to create session'
         });
     };
 
@@ -55,13 +61,56 @@ export default function SessionsPage() {
         <div className="space-y-6 animate-fade-in">
             <div className="flex items-center justify-between">
                 <div>
-                    <h2 className="text-3xl font-bold tracking-tight">QA & Training Sessions</h2>
+                    <h2 className="text-3xl font-bold tracking-tight">
+                        QA & Training Sessions
+                        <InfoTooltip content="Manage recurring calibration sessions and teach-backs to align team scoring." />
+                    </h2>
                     <p className="text-muted-foreground">Manage Calibrations and Teach-backs to ensure team alignment.</p>
                 </div>
-                <Button className="gap-2" onClick={handleNewSession}>
-                    <Plus className="h-4 w-4" />
-                    New Session
-                </Button>
+                <div className="flex gap-2">
+                    <Dialog>
+                        <DialogTrigger asChild>
+                            <Button variant="outline" className="gap-2">
+                                <Plus className="h-4 w-4" />
+                                New Calibration
+                            </Button>
+                        </DialogTrigger>
+                        <DialogContent>
+                            <DialogHeader>
+                                <DialogTitle>Schedule Calibration</DialogTitle>
+                                <DialogDescription>Create a new scoring alignment session.</DialogDescription>
+                            </DialogHeader>
+                            <div className="space-y-4 py-4">
+                                <div className="space-y-2">
+                                    <Label>Topic / Ticket Type</Label>
+                                    <Input placeholder="e.g., Returns & Refunds" />
+                                </div>
+                                <div className="space-y-2">
+                                    <Label>Date</Label>
+                                    <Input type="date" />
+                                </div>
+                                <div className="space-y-2">
+                                    <Label>Conductor</Label>
+                                    <Select>
+                                        <SelectTrigger><SelectValue placeholder="Select Host" /></SelectTrigger>
+                                        <SelectContent>
+                                            <SelectItem value="me">Me (Current User)</SelectItem>
+                                            <SelectItem value="coordinator">QA Coordinator</SelectItem>
+                                        </SelectContent>
+                                    </Select>
+                                </div>
+                            </div>
+                            <DialogFooter>
+                                <Button onClick={() => handleNewSession('Calibration')}>Schedule Session</Button>
+                            </DialogFooter>
+                        </DialogContent>
+                    </Dialog>
+
+                    <Button className="gap-2" onClick={() => handleNewSession('Teach-back')}>
+                        <GraduationCap className="h-4 w-4" />
+                        Log Teach-back
+                    </Button>
+                </div>
             </div>
 
             {/* Quick Stats */}

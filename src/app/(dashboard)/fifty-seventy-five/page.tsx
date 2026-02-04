@@ -37,25 +37,39 @@ export default function FiftySeventyFivePage() {
         if (!currentKpi) return;
 
         const isHigherBetter = currentKpi.name !== 'AHT';
+        const allScores = getScores();
 
         // Generate Analysis for each agent
         const wData = [];
         const aData = [];
 
         for (const agent of agents) {
-            // MOCK DATA GENERATION FOR DEMO PURPOSES
-            // In real app, this would come from the database aggregated by month/week
+            // Get REAL mock scores for this agent & KPI
+            const agentScores = allScores
+                .filter(s => s.agent_id === agent.id && s.kpi_id === selectedKpiId)
+                .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
 
-            // Random variation based on agent ID to make it consistent but varied
-            const seed = agent.id.length;
-            const basePerformance = isHigherBetter ? 80 + (seed % 20) : 500 - (seed * 10);
-
-            // 1. Weekly Data (Last 4 weeks)
+            // 1. Weekly Data (Use last 4 mock scores, or pad if missing)
+            // We need 4 data points. 
             const weeks = ['Week 1', 'Week 2', 'Week 3', 'Week 4'].map((w, i) => {
-                const variance = (Math.random() * 10) - 5;
+                // If we have data, use it. If not, generate deterministic value based on ID
+                // Reverse index because scores are sorted desc (newest first)
+                // We want Week 4 to be latest
+                const scoreIdx = 3 - i;
+                let val = 0;
+
+                if (agentScores[i]) {
+                    val = agentScores[i].value;
+                } else {
+                    // Fallback: Deterministic generation based on Agent ID chars
+                    const seed = agent.id.charCodeAt(0) + agent.id.charCodeAt(agent.id.length - 1) + i;
+                    const base = isHigherBetter ? 82 : 450;
+                    val = base + (seed % 15) * (isHigherBetter ? 1 : 10);
+                }
+
                 return {
                     week: w,
-                    value: Math.round(basePerformance + variance)
+                    value: Math.round(val)
                 };
             });
             const wAnalysis = analyzeWeeklyMonitor(weeks, currentKpi.target, isHigherBetter);
@@ -63,12 +77,15 @@ export default function FiftySeventyFivePage() {
 
             // 2. Annual Data (Last 6 months)
             const months = ['Aug', 'Sep', 'Oct', 'Nov', 'Dec', 'Jan'].map((m, i) => {
-                // Simulate improvement or decline logic
-                const trendFactor = (i * 2);
-                const variance = (Math.random() * 10) - 5;
+                // Deterministic trend simulation
+                const seed = agent.id.charCodeAt(0) + i;
+                const trend = (i % 2 === 0) ? 2 : -1; // Zig zag trend
+                const base = wAnalysis.mtdAverage; // Anchor to the weekly average
+                const val = base + trend + (seed % 5);
+
                 return {
                     month: m,
-                    value: Math.round(basePerformance + trendFactor + variance)
+                    value: Math.round(val)
                 };
             });
             const aAnalysis = analyzeAnnualTrend(months, currentKpi.target, isHigherBetter);

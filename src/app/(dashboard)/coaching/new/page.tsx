@@ -97,6 +97,7 @@ export default function NewCoachingSessionPage() {
             if (primaryOpportunity) keyObservations.push(`Primary: ${primaryOpportunity}`);
             if (secondaryOpportunity) keyObservations.push(`Secondary: ${secondaryOpportunity}`);
             if (diagnosisExplain) keyObservations.push(`Diagnosis: ${diagnosisExplain}`);
+            if (issueResolvedExplain) keyObservations.push(`Resolution: ${issueResolvedExplain}`);
 
             const newSession = createCoachingSession({
                 agent_id: agentId,

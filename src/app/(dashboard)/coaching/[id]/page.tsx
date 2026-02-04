@@ -103,6 +103,19 @@ export default function CoachingSessionDetailPage() {
                                 </div>
                             </div>
 
+                            {session.trigger_kpi_ids && session.trigger_kpi_ids.length > 0 && (
+                                <div className="pt-2">
+                                    <p className="text-sm text-muted-foreground mb-2">Impacted KPIs</p>
+                                    <div className="flex flex-wrap gap-2">
+                                        {session.trigger_kpi_ids.map((kpiId, idx) => (
+                                            <Badge key={idx} variant="outline" className="text-xs">
+                                                {kpiId.replace('kpi-', '').toUpperCase()}
+                                            </Badge>
+                                        ))}
+                                    </div>
+                                </div>
+                            )}
+
                             <div className="pt-4 border-t space-y-4">
                                 <div>
                                     <p className="text-sm text-muted-foreground mb-1">Diagnosis</p>
@@ -242,6 +255,6 @@ export default function CoachingSessionDetailPage() {
                     </Card>
                 </div>
             </div>
-        </div>
+        </div >
     );
 }

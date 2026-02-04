@@ -24,7 +24,7 @@ import { TrendChart } from '@/components/dashboard/TrendChart';
 export default function AgentDetailPage() {
     const params = useParams();
     const router = useRouter();
-    const [data, setData] = useState<{ agent: Agent, scores: Score[], kpis: KPI[] } | null>(null);
+    const [data, setData] = useState<any>(null);
 
     useEffect(() => {
         if (params.id) {
@@ -45,10 +45,10 @@ export default function AgentDetailPage() {
     // For now, let's just plot all available scores for the first KPI found
     const targetKpi = kpis[0]; // Usually "QA Score" or similar
     const chartData = scores
-        .filter(s => s.kpi_id === targetKpi.id)
+        .filter((s: Score) => s.kpi_id === targetKpi.id)
         .slice(0, 10)
         .reverse()
-        .map(s => ({
+        .map((s: Score) => ({
             date: s.date,
             value: s.value
         }));
@@ -95,8 +95,10 @@ export default function AgentDetailPage() {
                                 <CardTitle className="text-sm font-medium">Current Performance</CardTitle>
                             </CardHeader>
                             <CardContent>
-                                <div className="text-2xl font-bold">92.5%</div>
-                                <p className="text-xs text-muted-foreground">+2.1% from last month</p>
+                                <div className="text-2xl font-bold">{data.metrics?.currentPerformance || 0}%</div>
+                                <p className="text-xs text-muted-foreground">
+                                    {data.metrics?.weekChange >= 0 ? '+' : ''}{data.metrics?.weekChange || 0}% from last week
+                                </p>
                             </CardContent>
                         </Card>
                         <Card>
@@ -104,8 +106,10 @@ export default function AgentDetailPage() {
                                 <CardTitle className="text-sm font-medium">Compliance Risk</CardTitle>
                             </CardHeader>
                             <CardContent>
-                                <div className="text-2xl font-bold text-green-600">Low</div>
-                                <p className="text-xs text-muted-foreground">0 Critical Errors this month</p>
+                                <div className={`text-2xl font-bold ${data.metrics?.riskLevel === 'Low' ? 'text-green-600' :
+                                    data.metrics?.riskLevel === 'Medium' ? 'text-orange-600' : 'text-red-600'
+                                    }`}>{data.metrics?.riskLevel || 'Unknown'}</div>
+                                <p className="text-xs text-muted-foreground">{data.metrics?.openActionPlans || 0} open action plans</p>
                             </CardContent>
                         </Card>
                         <Card>
@@ -113,8 +117,14 @@ export default function AgentDetailPage() {
                                 <CardTitle className="text-sm font-medium">Coaching Status</CardTitle>
                             </CardHeader>
                             <CardContent>
-                                <div className="text-2xl font-bold text-orange-600">Active</div>
-                                <p className="text-xs text-muted-foreground">Due for follow-up on Feb 10</p>
+                                <div className={`text-2xl font-bold ${data.metrics?.coachingStatus === 'Active' ? 'text-orange-600' :
+                                    data.metrics?.coachingStatus === 'Completed' ? 'text-green-600' : 'text-slate-400'
+                                    }`}>{data.metrics?.coachingStatus || 'None'}</div>
+                                <p className="text-xs text-muted-foreground">
+                                    {data.metrics?.nextFollowUp
+                                        ? `Follow-up on ${data.metrics.nextFollowUp}`
+                                        : `${data.metrics?.totalCoachingSessions || 0} total sessions`}
+                                </p>
                             </CardContent>
                         </Card>
                     </div>
@@ -144,8 +154,8 @@ export default function AgentDetailPage() {
                                         </TableRow>
                                     </TableHeader>
                                     <TableBody>
-                                        {scores.slice(0, 5).map((score) => {
-                                            const kpi = kpis.find(k => k.id === score.kpi_id);
+                                        {scores.slice(0, 5).map((score: Score) => {
+                                            const kpi = kpis.find((k: KPI) => k.id === score.kpi_id);
                                             return (
                                                 <TableRow key={score.id}>
                                                     <TableCell className="font-medium">{score.date}</TableCell>

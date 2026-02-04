@@ -36,34 +36,49 @@ export const getActionPlans = () => {
 export const getDashboardMetrics = () => {
     const { kpis, scores } = getMockData();
 
-    // Aggregate latest values for Dashboard
-    // Simple average of the last recorded score for each KPI across all agents
+    // Aggregate latest values for Dashboard with REAL 8-week history
     const metrics = kpis.map(kpi => {
         const kpiScores = scores.filter(s => s.kpi_id === kpi.id && s.is_official);
-        // Sort by date desc
-        kpiScores.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
 
-        // Get last score for every agent? No, let's just get average of "This Week" (latest date)
-        const latestDate = kpiScores[0]?.date;
+        // Get unique dates sorted by date desc
+        const uniqueDates = [...new Set(kpiScores.map(s => s.date))].sort((a, b) =>
+            new Date(b).getTime() - new Date(a).getTime()
+        );
+
+        // Calculate weekly averages for trend history
+        const history = uniqueDates.slice(0, 8).map((date, idx) => {
+            const weekScores = kpiScores.filter(s => s.date === date);
+            const avg = weekScores.length > 0
+                ? weekScores.reduce((acc, s) => acc + s.value, 0) / weekScores.length
+                : 0;
+            return {
+                date: `Week ${8 - idx}`,
+                value: Number(avg.toFixed(1)),
+                rawDate: date
+            };
+        }).reverse();
+
+        // Current (latest) value
+        const latestDate = uniqueDates[0];
         const currentScores = kpiScores.filter(s => s.date === latestDate);
-
         const sum = currentScores.reduce((acc, s) => acc + s.value, 0);
         const avg = currentScores.length > 0 ? sum / currentScores.length : 0;
+
+        // Calculate trend (compare latest week to previous week)
+        const trend = history.length >= 2
+            ? history[history.length - 1].value - history[history.length - 2].value
+            : 0;
 
         return {
             ...kpi,
             currentValue: Number(avg.toFixed(1)),
+            trend: Number(trend.toFixed(1)),
             calculationBreakdown: {
                 numerator: sum,
                 denominator: currentScores.length,
                 formula: 'Average (Sum / Count)'
             },
-            history: [ // Mock history based on real data would take more calc, using simplified visual data for now
-                { date: 'Week 1', value: avg * 0.95 },
-                { date: 'Week 2', value: avg * 0.98 },
-                { date: 'Week 3', value: avg * 0.92 },
-                { date: 'Week 4', value: avg }
-            ]
+            history
         };
     });
 
@@ -83,19 +98,60 @@ export const getKPIs = () => {
 }
 
 export const getAgentById = (id: string) => {
-    const { agents, scores, kpis } = getMockData();
+    const { agents, scores, kpis, coachingSessions, actionPlans } = getMockData();
     const agent = agents.find(a => a.id === id);
     if (!agent) return null;
 
     const agentScores = scores.filter(s => s.agent_id === id);
+    const agentCoaching = coachingSessions.filter(s => s.agent_id === id);
+    const agentPlans = actionPlans.filter(p => p.owner_id === id);
 
     // Sort scores by date desc
     agentScores.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
 
+    // Calculate current performance (average of latest week's quality scores)
+    const latestDate = agentScores[0]?.date;
+    const latestScores = agentScores.filter(s => s.date === latestDate);
+    const avgPerformance = latestScores.length > 0
+        ? latestScores.reduce((acc, s) => acc + s.value, 0) / latestScores.length
+        : 0;
+
+    // Calculate week-over-week change
+    const uniqueDates = [...new Set(agentScores.map(s => s.date))].sort((a, b) =>
+        new Date(b).getTime() - new Date(a).getTime()
+    );
+    const previousDate = uniqueDates[1];
+    const previousScores = previousDate ? agentScores.filter(s => s.date === previousDate) : [];
+    const prevAvg = previousScores.length > 0
+        ? previousScores.reduce((acc, s) => acc + s.value, 0) / previousScores.length
+        : avgPerformance;
+    const weekChange = avgPerformance - prevAvg;
+
+    // Calculate risk level
+    const overallAvg = agentScores.length > 0
+        ? agentScores.reduce((acc, s) => acc + s.value, 0) / agentScores.length
+        : 0;
+    const riskLevel = overallAvg < 75 ? 'Critical' : overallAvg < 85 ? 'Medium' : 'Low';
+
+    // Get coaching status
+    const activeCoaching = agentCoaching.find(c => c.status === 'follow_up_required');
+    const coachingStatus = activeCoaching ? 'Active' : (agentCoaching.length > 0 ? 'Completed' : 'None');
+
     return {
         agent,
         scores: agentScores,
-        kpis // returning KPIs to map names in UI
+        kpis,
+        coachingSessions: agentCoaching,
+        actionPlans: agentPlans,
+        metrics: {
+            currentPerformance: Number(avgPerformance.toFixed(1)),
+            weekChange: Number(weekChange.toFixed(1)),
+            riskLevel,
+            coachingStatus,
+            nextFollowUp: activeCoaching?.follow_up_date || null,
+            totalCoachingSessions: agentCoaching.length,
+            openActionPlans: agentPlans.filter(p => p.status !== 'closed').length
+        }
     };
 }
 

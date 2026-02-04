@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import { useState, useEffect } from 'react';
 import { getActionPlans, getAgents } from '@/lib/mock-service';
+import { PageGuide } from '@/components/ui/page-guide';
 import { ActionPlan, Agent } from '@/types/domain';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
@@ -81,7 +82,14 @@ export default function ActionPlansPage() {
         <div className="space-y-6">
             <div className="flex items-center justify-between">
                 <div>
-                    <h2 className="text-3xl font-bold tracking-tight">Action Plans</h2>
+                    <h2 className="text-3xl font-bold tracking-tight flex items-center gap-2">
+                        Action Plans
+                        <PageGuide
+                            title="Action Plans"
+                            description="Track corrective actions and strategic initiatives. Monitor progress from open to closed."
+                            items={['5 Whys Integration', 'Owner Assignment', 'Timeline Tracking']}
+                        />
+                    </h2>
                     <p className="text-muted-foreground">Manage strategic initiatives and corrective actions.</p>
                 </div>
                 <div className="flex gap-2">

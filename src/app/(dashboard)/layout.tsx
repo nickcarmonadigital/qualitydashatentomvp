@@ -1,5 +1,6 @@
 import { Sidebar } from '@/components/dashboard/Sidebar';
 import { TopNav } from '@/components/dashboard/TopNav';
+import { OnboardingTour } from '@/components/onboarding-tour';
 
 export default function DashboardLayout({
     children,
@@ -10,6 +11,7 @@ export default function DashboardLayout({
         <div className="min-h-screen bg-slate-50">
             <Sidebar />
             <TopNav />
+            <OnboardingTour />
             <main className="pl-64 pt-16 min-h-screen">
                 <div className="p-8 max-w-7xl mx-auto">
                     {children}

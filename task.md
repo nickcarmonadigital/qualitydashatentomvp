@@ -1,26 +1,26 @@
-# Task List
+# Project Execution Task List
 
-## 1. Compliance & Security Core
-- [x] **Audit Logging System**: Track all critical actions (score changes, coaching).
-- [x] **Role-Based Access Control (RBAC)**: secure specific routes.
-- [x] **Data Sanitation**: Ensure no PII in logs/exports.
+## Phase 1: UI Structure (Sidebar & Help)
+- [x] **Refactor Sidebar**: Implement collapsible accordion sections to reduce crowding.
+- [x] **Audit PageGuides**: Add Help Circles to:
+    - [x] Admin Dashboard
+    - [x] Settings Page
+    - [x] Action Plans List & Detail
+    - [x] Weekly Insight Form
+    - [x] Coaching Goals
 
-## 2. Advanced Analytics Module
-- [x] **50/75 Logic Implementation**: Analysis page for bottom quartile monitoring.
-- [x] **Trend Analysis Charts**: Visualizing performance over time.
+## Phase 2: Functional Fixes
+- [x] **Action Plan Editing**: Implement `action-plans/[id]/edit` page and wire button.
+- [x] **Admin Flow**: Redesign Admin page into a card-based dashboard.
 
-## 3. Operational Tools
-- [x] **Coaching Workflow**: End-to-end session management.
-- [x] **Action Plans**: Structured remediation plans.
-- [x] **LSS Tools**: Fishbone, 5 Whys, Audit Randomizer.
+## Phase 3: Connected Experience (Onboarding)
+- [x] **Onboarding Tour**: Create `TourGuide` component following CI Checklist order:
+    1. Dashboard
+    2. LSS Tools
+    3. 50/75 Analysis
+    4. Coaching
+    5. Action Plans
+- [x] **Integration**: Launch tour from a "Start Guide" button or permanent help menu.
 
-## 4. UI/UX Polish & Demo Readiness (Current Focus)
-- [x] **Gap Analysis**: comprehensive review of missing UI/UX elements.
-- [x] **Sidebar Organization**: Group navigation into logical sections.
-- [x] **Help System**: Added "Info Circles" (PageGuide) to all major pages.
-- [x] **Empty States**: (Handled via default UI components).
-- [ ] **Responsive Check**: (Visual check recommended by user).
-
-## 5. Verification & Deployment
-- [x] **Data Consistency Check**: (Completed)
-- [ ] **Final Walkthrough**: Recording of the full platform flow.
+## Verification
+- [ ] Manual Walkthrough of the Tour.

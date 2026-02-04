@@ -1,5 +1,7 @@
 'use client';
 
+import { useState } from 'react';
+
 import Link from 'next/link';
 import Image from 'next/image';
 import { usePathname } from 'next/navigation';
@@ -17,7 +19,9 @@ import {
     MessageSquare,
     ShieldCheck,
     GraduationCap,
-    BookOpen
+    BookOpen,
+    ChevronDown,
+    ChevronRight
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { signOut } from 'next-auth/react';
@@ -66,9 +70,18 @@ const adminItems = [
 export function Sidebar() {
     const pathname = usePathname();
     const isAdmin = true;
+    const [expandedGroups, setExpandedGroups] = useState<string[]>(['Performance Engine', 'Coaching & Development']);
+
+    const toggleGroup = (title: string) => {
+        setExpandedGroups(prev =>
+            prev.includes(title)
+                ? prev.filter(g => g !== title)
+                : [...prev, title]
+        );
+    };
 
     return (
-        <div className="flex sidebar-gradient text-white h-screen w-64 flex-col fixed left-0 top-0 border-r border-slate-800 z-50">
+        <div className="flex sidebar-gradient text-white h-screen w-64 flex-col fixed left-0 top-0 border-r border-slate-800 z-50 transition-all duration-300">
             <div className="p-6 flex items-center space-x-3 border-b border-slate-800/50">
                 <div className="relative w-10 h-10 rounded-lg overflow-hidden glow-accent flex-shrink-0">
                     <Image
@@ -84,59 +97,85 @@ export function Sidebar() {
                 </div>
             </div>
 
-            <nav className="flex-1 px-4 py-6 space-y-6 overflow-y-auto no-scrollbar">
-                {navGroups.map((group, idx) => (
-                    <div key={idx}>
-                        <h3 className="mb-2 px-2 text-xs font-semibold text-slate-500 uppercase tracking-wider">
-                            {group.title}
-                        </h3>
-                        <div className="space-y-1">
-                            {group.items.map((item) => (
-                                <Link key={item.href} href={item.href}>
-                                    <Button
-                                        variant="ghost"
-                                        size="sm"
-                                        className={cn(
-                                            "w-full justify-start text-slate-300 hover:text-white hover:bg-slate-800/50",
-                                            pathname === item.href && "bg-slate-800 text-white shadow-inner-glow"
-                                        )}
-                                    >
-                                        <item.icon className="mr-3 h-4 w-4" />
-                                        {item.name}
-                                    </Button>
-                                </Link>
-                            ))}
+            <nav className="flex-1 px-4 py-6 space-y-2 overflow-y-auto no-scrollbar">
+                {navGroups.map((group, idx) => {
+                    const isExpanded = expandedGroups.includes(group.title);
+                    return (
+                        <div key={idx} className="border-b border-slate-800/50 pb-2 last:border-0">
+                            <button
+                                onClick={() => toggleGroup(group.title)}
+                                className="w-full flex items-center justify-between mb-2 px-2 text-xs font-semibold text-slate-500 uppercase tracking-wider hover:text-slate-300 transition-colors"
+                            >
+                                {group.title}
+                                {isExpanded ? <ChevronDown className="h-3 w-3" /> : <ChevronRight className="h-3 w-3" />}
+                            </button>
+
+                            {isExpanded && (
+                                <div className="space-y-1 animate-in slide-in-from-top-1 duration-200">
+                                    {group.items.map((item) => (
+                                        <Link key={item.href} href={item.href}>
+                                            <Button
+                                                variant="ghost"
+                                                size="sm"
+                                                className={cn(
+                                                    "w-full justify-start text-slate-300 hover:text-white hover:bg-slate-800/50 pl-4",
+                                                    pathname === item.href && "bg-slate-800 text-white shadow-inner-glow"
+                                                )}
+                                            >
+                                                <item.icon className="mr-3 h-4 w-4" />
+                                                {item.name}
+                                            </Button>
+                                        </Link>
+                                    ))}
+                                </div>
+                            )}
                         </div>
-                    </div>
-                ))}
+                    );
+                })}
 
                 {isAdmin && (
-                    <div>
-                        <h3 className="mb-2 px-2 text-xs font-semibold text-slate-500 uppercase tracking-wider">
+                    <div className="border-t border-slate-800/50 pt-4">
+                        <button
+                            onClick={() => toggleGroup("Administration")}
+                            className="w-full flex items-center justify-between mb-2 px-2 text-xs font-semibold text-slate-500 uppercase tracking-wider hover:text-slate-300 transition-colors"
+                        >
                             Administration
-                        </h3>
-                        <div className="space-y-1">
-                            {adminItems.map((item) => (
-                                <Link key={item.href} href={item.href}>
-                                    <Button
-                                        variant="ghost"
-                                        size="sm"
-                                        className={cn(
-                                            "w-full justify-start text-slate-300 hover:text-white hover:bg-slate-800/50",
-                                            pathname === item.href && "bg-slate-800 text-white"
-                                        )}
-                                    >
-                                        <item.icon className="mr-3 h-4 w-4" />
-                                        {item.name}
-                                    </Button>
-                                </Link>
-                            ))}
-                        </div>
+                            {expandedGroups.includes("Administration") ? <ChevronDown className="h-3 w-3" /> : <ChevronRight className="h-3 w-3" />}
+                        </button>
+
+                        {expandedGroups.includes("Administration") && (
+                            <div className="space-y-1 animate-in slide-in-from-top-1 duration-200">
+                                {adminItems.map((item) => (
+                                    <Link key={item.href} href={item.href}>
+                                        <Button
+                                            variant="ghost"
+                                            size="sm"
+                                            className={cn(
+                                                "w-full justify-start text-slate-300 hover:text-white hover:bg-slate-800/50 pl-4",
+                                                pathname === item.href && "bg-slate-800 text-white"
+                                            )}
+                                        >
+                                            <item.icon className="mr-3 h-4 w-4" />
+                                            {item.name}
+                                        </Button>
+                                    </Link>
+                                ))}
+                            </div>
+                        )}
                     </div>
                 )}
             </nav>
 
-            <div className="p-4 border-t border-slate-800">
+            <div className="p-4 border-t border-slate-800 space-y-2">
+                <Button
+                    variant="outline"
+                    className="w-full justify-start border-slate-700 text-slate-300 hover:text-white hover:bg-slate-800 bg-slate-900/50"
+                    onClick={() => window.dispatchEvent(new Event('start-tour'))}
+                >
+                    <span className="mr-3 text-lg">🚀</span>
+                    Start Tour
+                </Button>
+
                 <Button
                     variant="ghost"
                     className="w-full justify-start text-red-400 hover:text-red-300 hover:bg-slate-800"

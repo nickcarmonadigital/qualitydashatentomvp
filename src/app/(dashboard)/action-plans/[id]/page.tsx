@@ -67,7 +67,11 @@ export default function ActionPlanDetailPage() {
                         </div>
                     </div>
 
-                    <Button variant="outline">Edit Plan</Button>
+                    <div className="flex gap-2">
+                        <Button variant="outline" asChild>
+                            <Link href={`/action-plans/${plan.id}/edit`}>Edit Plan</Link>
+                        </Button>
+                    </div>
                 </div>
             </div>
 

@@ -7,6 +7,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { toast } from 'sonner';
 import { Settings, Save, Clock, Target, Users } from 'lucide-react';
+import { PageGuide } from '@/components/ui/page-guide';
 
 export default function SettingsPage() {
     // Default values aligned with COPC standards
@@ -27,7 +28,14 @@ export default function SettingsPage() {
             <div className="flex items-center gap-3">
                 <Settings className="h-8 w-8 text-slate-600" />
                 <div>
-                    <h2 className="text-3xl font-bold tracking-tight">Settings</h2>
+                    <h2 className="text-3xl font-bold tracking-tight flex items-center gap-2">
+                        Settings
+                        <PageGuide
+                            title="Global Configuration"
+                            description="Manage COPC compliance targets, SLAs, and calibration frequencies."
+                            items={['Coaching SLA Def', 'Audit Targets', 'Calibration Frequency']}
+                        />
+                    </h2>
                     <p className="text-muted-foreground">Configure COPC compliance targets and SLAs</p>
                 </div>
             </div>

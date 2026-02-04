@@ -16,7 +16,8 @@ import {
     ClipboardList,
     MessageSquare,
     ShieldCheck,
-    GraduationCap
+    GraduationCap,
+    BookOpen
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { signOut } from 'next-auth/react';
@@ -32,6 +33,8 @@ const navItems = [
     { name: 'Six Sigma Tools', href: '/lss-tools', icon: Target },
     { name: '50/75 Analysis', href: '/fifty-seventy-five', icon: Target },
     { name: 'Action Plans', href: '/action-plans', icon: ClipboardList },
+    { name: 'Resources', href: '/resources', icon: BookOpen },
+    { name: 'Settings', href: '/settings', icon: Settings },
 ];
 
 const adminItems = [

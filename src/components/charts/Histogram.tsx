@@ -26,7 +26,7 @@ export function Histogram({ title, description, data, binCount, height = 300, co
     const histogramData = calculateHistogram(data, binCount);
 
     return (
-        <Card>
+        <Card className="min-w-0">
             <CardHeader>
                 <CardTitle>{title}</CardTitle>
                 {description && <CardDescription>{description}</CardDescription>}

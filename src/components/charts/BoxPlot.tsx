@@ -42,7 +42,7 @@ export function BoxPlot({ title, description, data, height = 200, unit = '' }: B
     const toPercent = (val: number) => ((val - domainMin) / totalDomain) * 100;
 
     return (
-        <Card>
+        <Card className="min-w-0">
             <CardHeader>
                 <CardTitle>{title}</CardTitle>
                 {description && <CardDescription>{description}</CardDescription>}

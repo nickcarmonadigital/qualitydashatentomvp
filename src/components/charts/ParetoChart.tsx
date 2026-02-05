@@ -43,7 +43,7 @@ export function ParetoChart({ title, description, data, height = 400 }: ParetoCh
     });
 
     return (
-        <Card>
+        <Card className="min-w-0">
             <CardHeader>
                 <CardTitle>{title}</CardTitle>
                 {description && <CardDescription>{description}</CardDescription>}

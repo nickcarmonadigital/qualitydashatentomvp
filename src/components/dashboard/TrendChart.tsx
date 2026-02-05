@@ -36,7 +36,7 @@ export function TrendChart({ title, data, color = "#2563eb", height = 300, showT
     const chartId = `chart-${title.replace(/[^a-zA-Z0-9]/g, '-')}`;
 
     return (
-        <Card>
+        <Card className="min-w-0">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                 <CardTitle className="text-base font-normal">{title}</CardTitle>
                 {showTrendAnalysis && trend !== 'NONE' && (

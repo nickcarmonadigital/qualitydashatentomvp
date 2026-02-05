@@ -34,7 +34,7 @@ export function ScatterPlot({ title, description, data, xLabel, yLabel, height =
     const isCorrelated = r2 > 0.5;
 
     return (
-        <Card>
+        <Card className="min-w-0">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                 <div className="space-y-1">
                     <CardTitle className="text-base font-medium">{title}</CardTitle>

@@ -52,7 +52,6 @@ const menuItems = {
     ],
     support: [
         { name: 'User Manual', href: '/manual', icon: BookOpen },
-        { name: 'Resources', href: '/resources', icon: FileText },
     ]
 };
 

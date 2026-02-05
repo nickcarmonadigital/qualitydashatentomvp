@@ -44,8 +44,6 @@ const getStatusBadge = (status: string) => {
     return <Badge variant={style.variant}>{style.label}</Badge>;
 };
 
-import { useSearchParams } from 'next/navigation';
-
 export default function CoachingPage() {
     const searchParams = useSearchParams();
     const [sessions, setSessions] = useState<CoachingSession[]>([]);

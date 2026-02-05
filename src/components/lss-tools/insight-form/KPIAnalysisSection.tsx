@@ -9,6 +9,8 @@ import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover
 import { Button } from '@/components/ui/button';
 import { Calculator, Edit2, RotateCcw } from 'lucide-react';
 
+import { InfoTooltip } from '@/components/ui/info-tooltip';
+
 export function KPIAnalysisSection() {
   const [data, setData] = useState<any[]>([]);
   const [overrides, setOverrides] = useState<Record<string, number>>({});
@@ -38,6 +40,10 @@ export function KPIAnalysisSection() {
 
   return (
     <div className="space-y-4">
+      <div className="flex items-center gap-2 mb-2">
+        <h3 className="text-lg font-semibold">KPI Performance</h3>
+        <InfoTooltip content="Analyze week-over-week performance deltas. Provide root cause analysis for any metrics missing target." />
+      </div>
       <Table>
         <TableHeader>
           <TableRow>

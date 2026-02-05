@@ -78,6 +78,11 @@ const SCENARIOS: Record<string, TourStep[]> = {
             route: "/dashboard"
         },
         {
+            title: "Manager Dashboard",
+            content: "Your daily command center. Track team performance, pending coaching, and critical issues in one view.",
+            route: "/manager"
+        },
+        {
             title: "Agent Analysis",
             content: "Drill down into individual agent performance to identify trends.",
             route: "/agents"

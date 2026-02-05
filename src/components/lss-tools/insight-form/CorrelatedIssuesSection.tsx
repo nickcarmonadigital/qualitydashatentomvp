@@ -6,6 +6,7 @@ import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Trash2, Plus } from 'lucide-react';
+import { InfoTooltip } from '@/components/ui/info-tooltip';
 
 interface IssueRow {
     id: number;
@@ -29,6 +30,10 @@ export function CorrelatedIssuesSection() {
 
     return (
         <div className="space-y-4">
+            <div className="flex items-center gap-2">
+                <h3 className="text-lg font-semibold">Correlated Issues</h3>
+                <InfoTooltip content="Link specific process or technology issues to KPI performance impact." />
+            </div>
             <div className="bg-blue-50 p-4 rounded-md border border-blue-100 text-sm text-blue-800 mb-4">
                 <strong>Guidance:</strong> Focus on patterns, not anecdotes. Link specific bugs or process gaps to measurable KPI dips.
             </div>

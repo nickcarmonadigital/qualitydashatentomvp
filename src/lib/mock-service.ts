@@ -96,7 +96,6 @@ export const getMockData = () => {
             issue_resolved: false,
             agent_commitment: 'I will set a daily alarm.',
             supervisor_commitment: 'I will check in on arrival time for 1 week.'
-                supervisor_commitment: 'I will check in on arrival time for 1 week.'
         });
 
         cachedWeeklyInsights = [
@@ -104,15 +103,14 @@ export const getMockData = () => {
             { id: 'week-5', week: 'Week 5 (Jan 26 - Feb 01)', status: 'submitted', author: 'You', summary: 'Strong KPI recovery in Spanish queues.' },
             { id: 'week-4', week: 'Week 4 (Jan 19 - Jan 25)', status: 'approved', author: 'You', summary: 'Q1 Training deployment successful.' },
         ];
-    });
-}
-return {
-    agents: cachedAgents,
-    kpis: cachedKPIs,
-    scores: cachedScores,
-    actionPlans: cachedActionPlans,
-    coachingSessions: cachedCoachingSessions
-};
+    }
+    return {
+        agents: cachedAgents,
+        kpis: cachedKPIs,
+        scores: cachedScores,
+        actionPlans: cachedActionPlans,
+        coachingSessions: cachedCoachingSessions
+    };
 }
 
 export const getActionPlans = () => {
@@ -610,9 +608,7 @@ export const getWeeklyInsightById = (id: string) => {
     };
 }
 
-// Mock update
-return true;
-}
+
 
 export const getWeeklyInsights = () => {
     // Ensure cache is populated

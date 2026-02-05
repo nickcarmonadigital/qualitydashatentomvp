@@ -9,6 +9,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { getDashboardMetrics, getInterventionCandidates, getActionPlans, getAgents, getScores, getKPIs } from '@/lib/mock-service';
 import { calculateVSF, identifyTrend } from '@/lib/lss/statistics';
+import { Agent, Score, ActionPlan } from '@/types/domain';
 import {
   AlertTriangle,
   TrendingUp,
@@ -50,13 +51,13 @@ export default function DashboardPage() {
 
     // Group by team
     const teams: Record<string, { total: number; avgScore: number }> = {};
-    agents.forEach(agent => {
+    agents.forEach((agent: Agent) => {
       if (!teams[agent.team]) {
         teams[agent.team] = { total: 0, avgScore: 0 };
       }
-      const agentScores = scores.filter(s => s.agent_id === agent.id);
+      const agentScores = scores.filter((s: Score) => s.agent_id === agent.id);
       const avg = agentScores.length > 0
-        ? agentScores.reduce((acc, s) => acc + s.value, 0) / agentScores.length
+        ? agentScores.reduce((acc: number, s: Score) => acc + s.value, 0) / agentScores.length
         : 0;
       teams[agent.team].total++;
       teams[agent.team].avgScore += avg;
@@ -71,15 +72,15 @@ export default function DashboardPage() {
     // Quick stats
     const totalAgents = agents.length;
     const totalKPIs = kpis.length;
-    const activePlans = plans.filter(p => p.status === 'in_progress').length;
-    const criticalAgents = candidates.filter(c => c.riskLevel === 'Critical').length;
+    const activePlans = plans.filter((p: ActionPlan) => p.status === 'in_progress').length;
+    const criticalAgents = candidates.filter((c: any) => c.riskLevel === 'Critical').length;
 
     setQuickStats({
       totalAgents,
       totalKPIs,
       activePlans,
       criticalAgents,
-      completedPlans: plans.filter(p => p.status === 'closed').length,
+      completedPlans: plans.filter((p: ActionPlan) => p.status === 'closed').length,
       passRate: data[0]?.currentValue || 0,
       auditCompliance: 96.5 // Mocked for demo
     });
@@ -111,77 +112,89 @@ export default function DashboardPage() {
 
       {/* Quick Stats Banner */}
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
-        <Card className="metric-card bg-gradient-to-br from-blue-50 to-blue-100/50">
-          <CardContent className="p-4">
-            <div className="flex items-center gap-3">
-              <Users className="h-8 w-8 text-blue-600" />
-              <div>
-                <p className="text-2xl font-bold text-blue-700">{quickStats.totalAgents}</p>
-                <p className="text-xs text-blue-600/80">Total Agents</p>
+        <Link href="/agents">
+          <Card className="metric-card bg-gradient-to-br from-blue-50 to-blue-100/50 hover:shadow-md transition-all cursor-pointer">
+            <CardContent className="p-4">
+              <div className="flex items-center gap-3">
+                <Users className="h-8 w-8 text-blue-600" />
+                <div>
+                  <p className="text-2xl font-bold text-blue-700">{quickStats.totalAgents}</p>
+                  <p className="text-xs text-blue-600/80">Total Agents</p>
+                </div>
               </div>
-            </div>
-          </CardContent>
-        </Card>
+            </CardContent>
+          </Card>
+        </Link>
 
-        <Card className="metric-card bg-gradient-to-br from-green-50 to-green-100/50">
-          <CardContent className="p-4">
-            <div className="flex items-center gap-3">
-              <TrendingUp className="h-8 w-8 text-green-600" />
-              <div>
-                <p className="text-2xl font-bold text-green-700">{quickStats.passRate}%</p>
-                <p className="text-xs text-green-600/80">Pass Rate</p>
+        <Link href="/weekly-insight">
+          <Card className="metric-card bg-gradient-to-br from-green-50 to-green-100/50 hover:shadow-md transition-all cursor-pointer">
+            <CardContent className="p-4">
+              <div className="flex items-center gap-3">
+                <TrendingUp className="h-8 w-8 text-green-600" />
+                <div>
+                  <p className="text-2xl font-bold text-green-700">{quickStats.passRate}%</p>
+                  <p className="text-xs text-green-600/80">Pass Rate</p>
+                </div>
               </div>
-            </div>
-          </CardContent>
-        </Card>
+            </CardContent>
+          </Card>
+        </Link>
 
-        <Card className="metric-card bg-gradient-to-br from-amber-50 to-amber-100/50">
-          <CardContent className="p-4">
-            <div className="flex items-center gap-3">
-              <Clock className="h-8 w-8 text-amber-600" />
-              <div>
-                <p className="text-2xl font-bold text-amber-700">{quickStats.activePlans}</p>
-                <p className="text-xs text-amber-600/80">Active Plans</p>
+        <Link href="/action-plans">
+          <Card className="metric-card bg-gradient-to-br from-amber-50 to-amber-100/50 hover:shadow-md transition-all cursor-pointer">
+            <CardContent className="p-4">
+              <div className="flex items-center gap-3">
+                <Clock className="h-8 w-8 text-amber-600" />
+                <div>
+                  <p className="text-2xl font-bold text-amber-700">{quickStats.activePlans}</p>
+                  <p className="text-xs text-amber-600/80">Active Plans</p>
+                </div>
               </div>
-            </div>
-          </CardContent>
-        </Card>
+            </CardContent>
+          </Card>
+        </Link>
 
-        <Card className="metric-card bg-gradient-to-br from-red-50 to-red-100/50">
-          <CardContent className="p-4">
-            <div className="flex items-center gap-3">
-              <AlertTriangle className="h-8 w-8 text-red-600" />
-              <div>
-                <p className="text-2xl font-bold text-red-700">{quickStats.criticalAgents}</p>
-                <p className="text-xs text-red-600/80">At-Risk Agents</p>
+        <Link href="/agents?filter=critical">
+          <Card className="metric-card bg-gradient-to-br from-red-50 to-red-100/50 hover:shadow-md transition-all cursor-pointer">
+            <CardContent className="p-4">
+              <div className="flex items-center gap-3">
+                <AlertTriangle className="h-8 w-8 text-red-600" />
+                <div>
+                  <p className="text-2xl font-bold text-red-700">{quickStats.criticalAgents}</p>
+                  <p className="text-xs text-red-600/80">At-Risk Agents</p>
+                </div>
               </div>
-            </div>
-          </CardContent>
-        </Card>
+            </CardContent>
+          </Card>
+        </Link>
 
-        <Card className="metric-card bg-gradient-to-br from-purple-50 to-purple-100/50">
-          <CardContent className="p-4">
-            <div className="flex items-center gap-3">
-              <ClipboardCheck className="h-8 w-8 text-purple-600" />
-              <div>
-                <p className="text-2xl font-bold text-purple-700">{quickStats.auditCompliance}%</p>
-                <p className="text-xs text-purple-600/80">Audit Compliance</p>
+        <Link href="/admin/audit">
+          <Card className="metric-card bg-gradient-to-br from-purple-50 to-purple-100/50 hover:shadow-md transition-all cursor-pointer">
+            <CardContent className="p-4">
+              <div className="flex items-center gap-3">
+                <ClipboardCheck className="h-8 w-8 text-purple-600" />
+                <div>
+                  <p className="text-2xl font-bold text-purple-700">{quickStats.auditCompliance}%</p>
+                  <p className="text-xs text-purple-600/80">Audit Compliance</p>
+                </div>
               </div>
-            </div>
-          </CardContent>
-        </Card>
+            </CardContent>
+          </Card>
+        </Link>
 
-        <Card className="metric-card bg-gradient-to-br from-emerald-50 to-emerald-100/50">
-          <CardContent className="p-4">
-            <div className="flex items-center gap-3">
-              <CheckCircle2 className="h-8 w-8 text-emerald-600" />
-              <div>
-                <p className="text-2xl font-bold text-emerald-700">{quickStats.completedPlans}</p>
-                <p className="text-xs text-emerald-600/80">Plans Done</p>
+        <Link href="/action-plans?status=closed">
+          <Card className="metric-card bg-gradient-to-br from-emerald-50 to-emerald-100/50 hover:shadow-md transition-all cursor-pointer">
+            <CardContent className="p-4">
+              <div className="flex items-center gap-3">
+                <CheckCircle2 className="h-8 w-8 text-emerald-600" />
+                <div>
+                  <p className="text-2xl font-bold text-emerald-700">{quickStats.completedPlans}</p>
+                  <p className="text-xs text-emerald-600/80">Plans Done</p>
+                </div>
               </div>
-            </div>
-          </CardContent>
-        </Card>
+            </CardContent>
+          </Card>
+        </Link>
       </div>
 
       {/* KPI Cards Row */}

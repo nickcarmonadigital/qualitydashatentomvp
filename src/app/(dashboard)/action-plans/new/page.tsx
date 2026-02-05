@@ -53,12 +53,13 @@ export default function NewActionPlanPage() {
     return (
         <div className="space-y-6 max-w-4xl mx-auto">
             <div>
-                <Button variant="ghost" className="mb-4 pl-0 hover:bg-transparent hover:underline" asChild>
-                    <Link href="/action-plans">
-                        <ArrowLeft className="mr-2 h-4 w-4" />
-                        Back to Action Plans
-                    </Link>
-                </Button>
+                <Link
+                    href="/action-plans"
+                    className="inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 hover:bg-accent hover:text-accent-foreground h-9 px-4 py-2 mb-4 pl-0 hover:bg-transparent hover:underline text-muted-foreground"
+                >
+                    <ArrowLeft className="mr-2 h-4 w-4" />
+                    Back to Action Plans
+                </Link>
                 <div className="flex items-center justify-between">
                     <div>
                         <h1 className="text-3xl font-bold tracking-tight mb-2">Create Action Plan</h1>

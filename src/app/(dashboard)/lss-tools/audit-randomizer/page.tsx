@@ -137,24 +137,19 @@ export default function AuditRandomizerPage() {
         <div className="space-y-6">
             {/* Header */}
             <div className="flex items-center justify-between">
-                <div className="space-y-1">
-                    <div className="flex items-center gap-3">
-                        <h2 className="text-3xl font-bold tracking-tight">
-                            Audit Randomizer
-                            <InfoTooltip content="Randomly select tickets or calls for audit based on agent performance quartiles or uploaded data." />
-                        </h2>
-                        <Badge variant="secondary" className="text-sm px-3 py-1">
-                            DEMO FEATURE
-                        </Badge>
-                    </div>
-                    <p className="text-muted-foreground">
-                        Random ticket/call selector for quality audits
-                    </p>
+                <div>
+                    <h2 className="text-3xl font-bold tracking-tight">
+                        Audit Randomizer
+                        <InfoTooltip content="Upload ticket data to randomly select audit targets based on risk and quotas." />
+                    </h2>
+                    <p className="text-muted-foreground">Fair and randomized selection for QA audits.</p>
                 </div>
-                <Button onClick={generateAssignments}>
-                    <RefreshCcw className="w-4 h-4 mr-2" />
-                    Regenerate
-                </Button>
+                <div className="flex gap-2">
+                    <Button variant="outline" onClick={generateAssignments} disabled={uploadStatus === 'error'}>
+                        <RefreshCcw className="mr-2 h-4 w-4" />
+                        Randomize New Batch
+                    </Button>
+                </div>
             </div>
 
             {/* Disclaimer */}

@@ -28,7 +28,8 @@ import { signOut } from 'next-auth/react';
 
 const menuItems = {
     performance: [
-        { name: 'Dashboard', href: '/dashboard', icon: LayoutDashboard },
+        { name: 'Ops Dashboard', href: '/dashboard', icon: LayoutDashboard },
+        { name: 'Manager Dashboard', href: '/manager', icon: ShieldCheck },
         { name: 'Weekly Insights', href: '/weekly-insight', icon: FileText },
         { name: 'Agent Performance', href: '/agents', icon: Users },
         { name: '50/75 Analysis', href: '/fifty-seventy-five', icon: Target },

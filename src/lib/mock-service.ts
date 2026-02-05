@@ -628,3 +628,15 @@ export const createWeeklyInsight = (insight: any) => {
     cachedWeeklyInsights.unshift(newInsight);
     return newInsight;
 }
+
+export const updateWeeklyInsight = (id: string, updates: any) => {
+    // Ensure cache is populated
+    if (cachedWeeklyInsights.length === 0) {
+        getMockData();
+    }
+    const index = cachedWeeklyInsights.findIndex(w => w.id === id);
+    if (index === -1) return null;
+
+    cachedWeeklyInsights[index] = { ...cachedWeeklyInsights[index], ...updates };
+    return cachedWeeklyInsights[index];
+}

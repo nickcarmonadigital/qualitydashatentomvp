@@ -12,11 +12,14 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { NotificationCenter } from '@/components/notifications/NotificationCenter';
 
+import { MobileSidebar } from './MobileSidebar';
+
 export function TopNav() {
     return (
-        <header className="h-16 border-b bg-white flex items-center justify-between px-6 fixed top-0 right-0 left-64 z-10">
+        <header className="h-16 border-b bg-white flex items-center justify-between px-4 md:px-6 fixed top-0 right-0 left-0 md:left-64 z-10 transition-all duration-300">
             <div className="flex items-center space-x-4">
-                <div className="bg-[#0A1734] text-white text-xs px-3 py-1 rounded-full font-bold flex items-center">
+                <MobileSidebar />
+                <div className="bg-[#0A1734] text-white text-xs px-3 py-1 rounded-full font-bold flex items-center hidden md:flex">
                     <span className="mr-1">📊</span> Atento Quality Operations
                 </div>
             </div>

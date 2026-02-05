@@ -15,8 +15,8 @@ export default function DashboardLayout({
             <Suspense fallback={null}>
                 <OnboardingTour />
             </Suspense>
-            <main className="pl-64 pt-16 min-h-screen">
-                <div className="p-8 max-w-7xl mx-auto">
+            <main className="md:pl-64 pt-16 min-h-screen">
+                <div className="p-4 md:p-8 max-w-7xl mx-auto">
                     {children}
                 </div>
             </main>

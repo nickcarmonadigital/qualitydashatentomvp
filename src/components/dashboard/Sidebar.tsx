@@ -104,7 +104,7 @@ const SidebarGroup = ({ title, items, isOpen, onToggle, scenario }: { title: str
     );
 };
 
-export function Sidebar() {
+export function SidebarContent({ onNavigate }: { onNavigate?: () => void }) {
     const isAdmin = true;
     const groupLabels: Record<string, string> = {
         performance: 'Performance',
@@ -126,7 +126,7 @@ export function Sidebar() {
     };
 
     return (
-        <div className="flex sidebar-gradient text-white h-screen w-64 flex-col fixed left-0 top-0 border-r border-slate-800 z-50 transition-all duration-300">
+        <div className="flex flex-col h-full text-white">
             <div className="p-6 flex items-center space-x-3 border-b border-slate-800/50">
                 <div className="relative w-10 h-10 rounded-lg overflow-hidden glow-accent flex-shrink-0">
                     <Image
@@ -186,7 +186,10 @@ export function Sidebar() {
                 <Button
                     variant="outline"
                     className="w-full justify-start border-slate-700 text-slate-300 hover:text-white hover:bg-slate-800 bg-slate-900/50"
-                    onClick={() => window.dispatchEvent(new CustomEvent('start-tour', { detail: { scenario: 'GLOBAL' } }))}
+                    onClick={() => {
+                        window.dispatchEvent(new CustomEvent('start-tour', { detail: { scenario: 'GLOBAL' } }));
+                        onNavigate?.();
+                    }}
                 >
                     <span className="mr-3 text-lg">🚀</span>
                     Full Tour
@@ -201,6 +204,14 @@ export function Sidebar() {
                     Sign Out
                 </Button>
             </div>
+        </div>
+    );
+}
+
+export function Sidebar() {
+    return (
+        <div className="hidden md:flex sidebar-gradient text-white h-screen w-64 flex-col fixed left-0 top-0 border-r border-slate-800 z-50 transition-all duration-300">
+            <SidebarContent />
         </div>
     );
 }

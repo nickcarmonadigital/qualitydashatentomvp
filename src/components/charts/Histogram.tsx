@@ -32,7 +32,7 @@ export function Histogram({ title, description, data, binCount, height = 300, co
                 {description && <CardDescription>{description}</CardDescription>}
             </CardHeader>
             <CardContent>
-                <div style={{ height: height, width: '100%' }}>
+                <div style={{ height: height, width: '100%' }} className="min-w-0 overflow-hidden">
                     <ResponsiveContainer width="100%" height="100%">
                         <BarChart
                             data={histogramData}

@@ -49,7 +49,7 @@ export function ParetoChart({ title, description, data, height = 400 }: ParetoCh
                 {description && <CardDescription>{description}</CardDescription>}
             </CardHeader>
             <CardContent>
-                <div style={{ height: height, width: '100%' }}>
+                <div style={{ height: height, width: '100%' }} className="min-w-0 overflow-hidden">
                     <ResponsiveContainer width="100%" height="100%">
                         <ComposedChart
                             data={chartData}

@@ -50,7 +50,7 @@ export function ScatterPlot({ title, description, data, xLabel, yLabel, height =
                 </div>
             </CardHeader>
             <CardContent>
-                <div style={{ height: height, width: '100%' }}>
+                <div style={{ height: height, width: '100%' }} className="min-w-0 overflow-hidden">
                     <ResponsiveContainer width="100%" height="100%">
                         <ScatterChart margin={{ top: 20, right: 20, bottom: 20, left: 20 }}>
                             <CartesianGrid strokeDasharray="3 3" />

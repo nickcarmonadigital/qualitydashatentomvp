@@ -51,7 +51,7 @@ export function TrendChart({ title, data, color = "#2563eb", height = 300, showT
                 )}
             </CardHeader>
             <CardContent>
-                <div style={{ height: height, width: '100%' }}>
+                <div style={{ height: height, width: '100%' }} className="min-w-0 overflow-hidden">
                     <ResponsiveContainer width="100%" height="100%">
                         <AreaChart data={data} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
                             <defs>

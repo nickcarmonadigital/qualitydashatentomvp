@@ -48,7 +48,7 @@ export function BoxPlot({ title, description, data, height = 200, unit = '' }: B
                 {description && <CardDescription>{description}</CardDescription>}
             </CardHeader>
             <CardContent>
-                <div style={{ height: height, width: '100%' }} className="relative flex items-center justify-center border rounded-md bg-slate-50/50">
+                <div style={{ height: height, width: '100%' }} className="relative flex items-center justify-center border rounded-md bg-slate-50/50 min-w-0 overflow-hidden">
                     <div className="w-[90%] h-[100px] relative">
                         {/* Axis Label (Approximate) */}
                         <div className="absolute bottom-[-30px] w-full flex justify-between text-xs text-muted-foreground">

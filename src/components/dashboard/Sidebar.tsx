@@ -141,7 +141,7 @@ export function SidebarContent({ onNavigate }: { onNavigate?: () => void }) {
                 </div>
             </div>
 
-            <nav className="flex-1 px-4 py-6 space-y-4 overflow-y-auto no-scrollbar">
+            <nav className="flex-1 px-4 py-6 space-y-4 overflow-y-auto custom-scrollbar">
                 <SidebarGroup
                     title="Performance Engine"
                     items={menuItems.performance}
